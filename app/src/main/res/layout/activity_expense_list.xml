@@ -6,13 +6,41 @@
     android:background="#FFFFFF">
 
     <!-- Title -->
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Expenses"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:padding="16dp" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp">
+
+        <!-- Sidebar / hamburger icon -->
+        <ImageView
+            android:id="@+id/btnMenu"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/ic_menu"
+            android:contentDescription="Menu" />
+
+        <!-- Title text -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Expense List"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:gravity="center" />
+
+        <!-- Calendar icon -->
+        <ImageView
+            android:id="@+id/btnCalendar"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/ic_calendar"
+            android:contentDescription="Calendar" />
+
+    </LinearLayout>
+
 
     <!-- Expense List -->
     <ListView
@@ -31,7 +59,7 @@
         android:layout_height="wrap_content"
         android:text="+ Add expense"
         android:textSize="16sp"
-        android:backgroundTint="#000000"
+        android:backgroundTint="#2136F3"
         android:textColor="#FFFFFF"
         android:layout_margin="16dp" />
 

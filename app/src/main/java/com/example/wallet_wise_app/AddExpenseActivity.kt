@@ -82,7 +82,7 @@ class AddExpenseActivity : AppCompatActivity() {
             date = currentDate,
             time = currentTime,
             category = category,
-            description = category  // You can make this more specific later
+            description = binding.etDescription.text.toString().ifEmpty { category }
         )
 
         val result = dbHelper.insertExpense(expense)

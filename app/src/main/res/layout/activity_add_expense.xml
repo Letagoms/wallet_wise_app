@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add expense entry"
+        android:text="                    Add Expense Entry"
         android:textSize="22sp"
         android:textStyle="bold"
         android:layout_marginBottom="24dp" />
@@ -34,7 +34,23 @@
         android:background="@android:color/transparent"
         android:inputType="numberDecimal"
         android:layout_marginBottom="24dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Description"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="4dp" />
 
+    <EditText
+        android:id="@+id/etDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="e.g. Netflix, Uber, Whole Foods"
+        android:textSize="16sp"
+        android:padding="12dp"
+        android:background="#F5F5F5"
+        android:layout_marginBottom="24dp" />
     <!-- Date -->
     <TextView
         android:layout_width="wrap_content"
@@ -71,7 +87,7 @@
         android:background="#F5F5F5"
         android:layout_marginBottom="24dp" />
 
-    <!-- Add Receipt -->
+    <!-- Add Receipt or photo -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -92,7 +108,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="📷"
+            android:text=""
             android:textSize="24sp"
             android:layout_marginEnd="8dp" />
 
@@ -114,6 +130,15 @@
         android:layout_marginTop="4dp"
         android:layout_marginBottom="24dp" />
 
+    <!-- Description -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Description"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="4dp" />
+
     <!-- Add Expense Button -->
     <Button
         android:id="@+id/btnAddExpense"
@@ -121,7 +146,7 @@
         android:layout_height="wrap_content"
         android:text="Add expense"
         android:textSize="16sp"
-        android:backgroundTint="#000000"
+        android:backgroundTint="#2136F3"
         android:textColor="#FFFFFF"
         android:padding="16dp" />
 
