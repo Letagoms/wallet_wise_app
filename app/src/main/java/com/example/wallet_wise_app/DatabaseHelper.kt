@@ -12,6 +12,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
     DATABASE_VERSION
 ) {
 
+    // Table name and column names - stored as constants to avoid typos
     companion object {
         private const val DATABASE_NAME = "wallet_wise_app.db"
         private const val DATABASE_VERSION = 1
@@ -25,8 +26,10 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
         private const val COLUMN_RECEIPT_PATH = "receipt_path"
     }
 
+    // SQL statement that creates the expenses table with all its columns
     override fun onCreate(db: SQLiteDatabase?) {
         val createTable = """
+            
             CREATE TABLE $TABLE_EXPENSES (
                 $COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 $COLUMN_AMOUNT REAL NOT NULL,
@@ -37,10 +40,12 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
                 $COLUMN_RECEIPT_PATH TEXT
             )
         """.trimIndent()
-
+// Execute the SQL statement to create the table
         db?.execSQL(createTable)
     }
 
+    // onUpgrade runs when the database version number increases
+    // It drops (deletes) the old table and creates a new one
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_EXPENSES")
         onCreate(db)

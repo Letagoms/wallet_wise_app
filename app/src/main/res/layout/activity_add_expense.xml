@@ -88,6 +88,7 @@
         android:layout_marginBottom="24dp" />
 
     <!-- Add Receipt or photo -->
+    <!-- Add Receipt -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -100,24 +101,40 @@
         android:id="@+id/btnAddReceipt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:padding="16dp"
         android:background="#F5F5F5"
         android:gravity="center">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textSize="24sp"
-            android:layout_marginEnd="8dp" />
+        <ImageView
+            android:id="@+id/ivReceiptPreview"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            android:layout_marginBottom="8dp" />
 
-        <TextView
+        <LinearLayout
+            android:id="@+id/layoutUploadPrompt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tap to upload a photo"
-            android:textSize="14sp"
-            android:textColor="#888888" />
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_camera"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tap to upload a photo"
+                android:textSize="14sp"
+                android:textColor="#888888" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -129,15 +146,6 @@
         android:textColor="#AAAAAA"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="24dp" />
-
-    <!-- Description -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Description"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="4dp" />
 
     <!-- Add Expense Button -->
     <Button
