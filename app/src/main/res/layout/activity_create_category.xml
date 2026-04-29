@@ -1,6 +1,281 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F0F2F8">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- TOP TOOLBAR -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="8dp"
+        android:paddingEnd="16dp"
+        android:background="#F0F2F8">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="Back"
+            app:tint="#1A1A2E" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Category"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#1A1A2E" />
+    </LinearLayout>
+
+    <!-- SCROLLABLE FORM -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- CATEGORY NAME -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Category Name"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#1A1A2E"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/categoryNameInput"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="e.g. Groceries"
+                android:textSize="15sp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:background="@drawable/bg_input_field"
+                android:layout_marginBottom="20dp" />
+
+            <!-- MINIMUM MONTHLY GOAL -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Minimum Monthly Goal"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#1A1A2E"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_input_field"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:layout_marginBottom="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="R "
+                    android:textSize="15sp"
+                    android:textColor="#8A8FA8" />
+
+                <EditText
+                    android:id="@+id/minGoalInput"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:hint="0.00"
+                    android:textSize="15sp"
+                    android:inputType="numberDecimal"
+                    android:background="@android:color/transparent" />
+            </LinearLayout>
+
+            <!-- MAXIMUM MONTHLY GOAL -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Maximum Monthly Goal"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#1A1A2E"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_input_field"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="R "
+                    android:textSize="15sp"
+                    android:textColor="#8A8FA8" />
+
+                <EditText
+                    android:id="@+id/maxGoalInput"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:hint="0.00"
+                    android:textSize="15sp"
+                    android:inputType="numberDecimal"
+                    android:background="@android:color/transparent" />
+            </LinearLayout>
+
+            <!-- SLIDER -->
+            <com.google.android.material.slider.Slider
+                android:id="@+id/maxGoalSlider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:valueFrom="0"
+                android:valueTo="50000"
+                android:stepSize="100"
+                android:value="0"
+                app:thumbColor="#2348D6"
+                app:trackColorActive="#2348D6"
+                app:trackColorInactive="#C8CCE0" />
+
+            <!-- SELECT ICON -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select Icon"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#1A1A2E"
+                android:layout_marginBottom="12dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp">
+
+                <LinearLayout android:id="@+id/iconHouse"
+                    android:layout_width="0dp" android:layout_height="80dp"
+                    android:layout_weight="1" android:layout_marginEnd="8dp"
+                    android:gravity="center"
+                    android:background="@drawable/bg_icon_cell_selected">
+                    <ImageView android:layout_width="32dp" android:layout_height="32dp"
+                        android:src="@drawable/ic_home"
+                        android:contentDescription="Home" />
+                </LinearLayout>
+
+                <LinearLayout android:id="@+id/iconCar"
+                    android:layout_width="0dp" android:layout_height="80dp"
+                    android:layout_weight="1" android:layout_marginEnd="8dp"
+                    android:gravity="center"
+                    android:background="@drawable/bg_icon_cell_normal">
+                    <ImageView android:layout_width="32dp" android:layout_height="32dp"
+                        android:src="@drawable/ic_directions_car"
+                        android:contentDescription="Car" />
+                </LinearLayout>
+
+                <LinearLayout android:id="@+id/iconFood"
+                    android:layout_width="0dp" android:layout_height="80dp"
+                    android:layout_weight="1" android:layout_marginEnd="8dp"
+                    android:gravity="center"
+                    android:background="@drawable/bg_icon_cell_normal">
+                    <ImageView android:layout_width="32dp" android:layout_height="32dp"
+                        android:src="@drawable/ic_restaurant"
+                        android:contentDescription="Food" />
+                </LinearLayout>
+
+                <LinearLayout android:id="@+id/iconGift"
+                    android:layout_width="0dp" android:layout_height="80dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:background="@drawable/bg_icon_cell_normal">
+                    <ImageView android:layout_width="32dp" android:layout_height="32dp"
+                        android:src="@drawable/ic_card_giftcard"
+                        android:contentDescription="Gift" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="24dp">
+
+                <LinearLayout android:id="@+id/iconFlight"
+                    android:layout_width="0dp" android:layout_height="80dp"
+                    android:layout_weight="1" android:layout_marginEnd="8dp"
+                    android:gravity="center"
+                    android:background="@drawable/bg_icon_cell_normal">
+                    <ImageView android:layout_width="32dp" android:layout_height="32dp"
+                        android:src="@drawable/ic_flight"
+                        android:contentDescription="Flight" />
+                </LinearLayout>
+
+                <LinearLayout android:id="@+id/iconMedical"
+                    android:layout_width="0dp" android:layout_height="80dp"
+                    android:layout_weight="1" android:layout_marginEnd="8dp"
+                    android:gravity="center"
+                    android:background="@drawable/bg_icon_cell_normal">
+                    <ImageView android:layout_width="32dp" android:layout_height="32dp"
+                        android:src="@drawable/ic_medical_services"
+                        android:contentDescription="Medical" />
+                </LinearLayout>
+
+                <LinearLayout android:id="@+id/iconReceipt"
+                    android:layout_width="0dp" android:layout_height="80dp"
+                    android:layout_weight="1" android:layout_marginEnd="8dp"
+                    android:gravity="center"
+                    android:background="@drawable/bg_icon_cell_normal">
+                    <ImageView android:layout_width="32dp" android:layout_height="32dp"
+                        android:src="@drawable/ic_receipt"
+                        android:contentDescription="Receipt" />
+                </LinearLayout>
+
+                <LinearLayout android:id="@+id/iconGames"
+                    android:layout_width="0dp" android:layout_height="80dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:background="@drawable/bg_icon_cell_normal">
+                    <ImageView android:layout_width="32dp" android:layout_height="32dp"
+                        android:src="@drawable/ic_sports_esports"
+                        android:contentDescription="Games" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- CREATE BUTTON -->
+    <Button
+        android:id="@+id/btnCreateCategory"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Create Category"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:backgroundTint="#2348D6"
+        android:layout_margin="16dp" />
+
+</LinearLayout>

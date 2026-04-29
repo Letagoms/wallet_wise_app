@@ -17,9 +17,7 @@ class CreateCategoryActivity : AppCompatActivity() {
 
     private lateinit var categoryManager: CategoryManager
     private var userId: Int = -1
-    private var selectedColorResId: Int = android.R.color.holo_blue_dark
     private var selectedIconResId: Int = R.drawable.ic_home
-    private var selectedColorView: ImageView? = null
     private var selectedIconCell: LinearLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,26 +52,6 @@ class CreateCategoryActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
-        // Color picker
-        val colorPairs = listOf(
-            findViewById<ImageView>(R.id.colorBlue) to android.R.color.holo_blue_dark,
-            findViewById<ImageView>(R.id.colorGreen) to android.R.color.holo_green_dark,
-            findViewById<ImageView>(R.id.colorRed) to android.R.color.holo_red_dark,
-            findViewById<ImageView>(R.id.colorOrange) to android.R.color.holo_orange_dark,
-            findViewById<ImageView>(R.id.colorPurple) to R.color.purple,
-            findViewById<ImageView>(R.id.colorLightBlue) to R.color.light_blue,
-            findViewById<ImageView>(R.id.colorGray) to R.color.gray
-        )
-        selectedColorView = colorPairs[0].first
-        colorPairs.forEach { (view, colorResId) ->
-            view.setOnClickListener {
-                selectedColorView?.setImageResource(R.drawable.circle_color_normal)
-                view.setImageResource(R.drawable.circle_color_selected)
-                selectedColorView = view
-                selectedColorResId = colorResId
-            }
-        }
-
         // Icon picker
         val iconPairs = listOf(
             findViewById<LinearLayout>(R.id.iconHouse) to R.drawable.ic_home,
@@ -85,15 +63,12 @@ class CreateCategoryActivity : AppCompatActivity() {
             findViewById<LinearLayout>(R.id.iconReceipt) to R.drawable.ic_receipt,
             findViewById<LinearLayout>(R.id.iconGames) to R.drawable.ic_sports_esports
         )
+
         selectedIconCell = iconPairs[0].first
         iconPairs.forEach { (cell, iconResId) ->
             cell.setOnClickListener {
                 selectedIconCell?.background = ContextCompat.getDrawable(this, R.drawable.bg_icon_cell_normal)
-                selectedIconCell?.findViewById<ImageView>(android.R.id.icon)
-                    ?.setColorFilter(ContextCompat.getColor(this, android.R.color.darker_gray))
                 cell.background = ContextCompat.getDrawable(this, R.drawable.bg_icon_cell_selected)
-                cell.findViewById<ImageView>(android.R.id.icon)
-                    ?.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_blue_dark))
                 selectedIconCell = cell
                 selectedIconResId = iconResId
             }
@@ -118,7 +93,6 @@ class CreateCategoryActivity : AppCompatActivity() {
                 name = name,
                 minGoal = minGoal,
                 maxGoal = maxGoal,
-                colorResId = selectedColorResId,
                 iconResId = selectedIconResId,
                 userId = userId
             )
