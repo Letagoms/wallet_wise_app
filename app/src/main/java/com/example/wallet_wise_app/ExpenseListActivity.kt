@@ -50,11 +50,27 @@ class ExpenseListActivity : AppCompatActivity() {
         binding.navigationView.setNavigationItemSelectedListener { menuItem ->
             binding.drawerLayout.closeDrawer(binding.navigationView)
             when (menuItem.itemId) {
-                R.id.navHome -> { /* Already home */ }
+                R.id.navHome -> { /* Already on home */ }
+                R.id.navAddExpense -> {
+                    val intent = Intent(this, AddExpenseActivity::class.java)
+                    intent.putExtra("USER_ID", userId)
+                    startActivity(intent)
+                }
                 R.id.navBudgets -> {
                     val intent = Intent(this, BudgetActivity::class.java)
                     intent.putExtra("USER_ID", userId)
                     startActivity(intent)
+                }
+                R.id.navCreateCategory -> {
+                    val intent = Intent(this, CreateCategoryActivity::class.java)
+                    intent.putExtra("USER_ID", userId)
+                    startActivity(intent)
+                }
+                R.id.navLogout -> {
+                    val intent = Intent(this, LoginActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    finish()
                 }
             }
             true

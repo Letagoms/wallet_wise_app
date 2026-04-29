@@ -12,7 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Wallet_wise_app">
 
-        <!-- Login (Launcher - first screen) -->
         <activity
             android:name=".LoginActivity"
             android:exported="true">
@@ -22,22 +21,12 @@
             </intent-filter>
         </activity>
 
-        <!-- Register -->
-        <activity
-            android:name=".RegisterActivity"
-            android:exported="false" />
+        <activity android:name=".RegisterActivity" android:exported="false" />
+        <activity android:name=".ExpenseListActivity" android:exported="false" />
+        <activity android:name=".AddExpenseActivity" android:exported="false" />
+        <activity android:name=".BudgetActivity" android:exported="false" />
+        <activity android:name=".CreateCategoryActivity" android:exported="false" />
 
-        <!-- Expense List -->
-        <activity
-            android:name=".ExpenseListActivity"
-            android:exported="false" />
-
-        <!-- Add Expense -->
-        <activity
-            android:name=".AddExpenseActivity"
-            android:exported="false" />
-
-        <!-- FileProvider for receipt photos -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

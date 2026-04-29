@@ -7,9 +7,17 @@
             android:icon="@drawable/ic_home"
             android:title="Home" />
         <item
+            android:id="@+id/navAddExpense"
+            android:icon="@drawable/ic_receipt"
+            android:title="Add Expense" />
+        <item
             android:id="@+id/navBudgets"
             android:icon="@drawable/ic_budget"
             android:title="Budgets" />
+        <item
+            android:id="@+id/navCreateCategory"
+            android:icon="@drawable/ic_restaurant"
+            android:title="Create Category" />
         <item
             android:id="@+id/navLogout"
             android:icon="@drawable/ic_logout"
