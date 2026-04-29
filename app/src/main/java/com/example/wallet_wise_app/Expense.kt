@@ -8,7 +8,8 @@ data class Expense(
     val amount: Double,
     val date: String,
     val time: String,
-    val category: String,
+    val categoryId: Int,
     val description: String,
-    val receiptPath: String? = null
+    val receiptPath: String? = null,
+    val userId: Int = 0
 )

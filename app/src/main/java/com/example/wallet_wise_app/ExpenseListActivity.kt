@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -21,7 +20,8 @@ import java.util.Locale
 class ExpenseListActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityExpenseListBinding
-    private lateinit var dbHelper: ExpenseDatabaseHelper
+    private lateinit var expenseManager: ExpenseManager
+    private lateinit var categoryManager: CategoryManager
     private var userId: Int = -1
     private var currentStartDate: String? = null
     private var currentEndDate: String? = null
@@ -31,7 +31,8 @@ class ExpenseListActivity : AppCompatActivity() {
         binding = ActivityExpenseListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        dbHelper = ExpenseDatabaseHelper(this)
+        expenseManager = ExpenseManager(this)
+        categoryManager = CategoryManager(this)
         userId = intent.getIntExtra("USER_ID", -1)
 
         loadExpenses()
@@ -42,18 +43,23 @@ class ExpenseListActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // Hamburger menu click
         binding.btnMenu.setOnClickListener {
             binding.drawerLayout.openDrawer(binding.navigationView)
         }
 
-        // Navigation item click
         binding.navigationView.setNavigationItemSelectedListener { menuItem ->
             binding.drawerLayout.closeDrawer(binding.navigationView)
+            when (menuItem.itemId) {
+                R.id.navHome -> { /* Already home */ }
+                R.id.navBudgets -> {
+                    val intent = Intent(this, BudgetActivity::class.java)
+                    intent.putExtra("USER_ID", userId)
+                    startActivity(intent)
+                }
+            }
             true
         }
 
-        // Calendar icon click
         binding.btnCalendar.setOnClickListener {
             showDateRangeDialog()
         }
@@ -66,16 +72,19 @@ class ExpenseListActivity : AppCompatActivity() {
 
     private fun loadExpenses() {
         val expenses = if (currentStartDate != null && currentEndDate != null) {
-            dbHelper.getExpensesByDateRange(currentStartDate!!, currentEndDate!!, userId)
+            expenseManager.getExpensesByDateRange(currentStartDate!!, currentEndDate!!, userId)
         } else {
-            dbHelper.getAllExpenses(userId)
+            expenseManager.getExpenses(userId)
         }
 
-        val displayList = mutableListOf<String>()
+        val categories = categoryManager.getCategories(userId)
+        val categoryMap = categories.associate { it.id to it.name }
 
+        val displayList = mutableListOf<String>()
         for (expense in expenses) {
+            val categoryName = categoryMap[expense.categoryId] ?: "Unknown"
             val receiptIndicator = if (!expense.receiptPath.isNullOrEmpty()) " 📎" else ""
-            displayList.add("${expense.description}$receiptIndicator\n${expense.category} • ${expense.time}\n-R${String.format(Locale.getDefault(), "%.2f", expense.amount)}")
+            displayList.add("${expense.description}$receiptIndicator\n$categoryName • ${expense.time}\n-R${String.format(Locale.getDefault(), "%.2f", expense.amount)}")
         }
 
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, displayList)
@@ -97,13 +106,8 @@ class ExpenseListActivity : AppCompatActivity() {
     }
 
     private fun showDateRangeDialog() {
-        val dialogView = layoutInflater.inflate(android.R.layout.simple_list_item_1, null) as TextView
-        // We'll use a custom layout instead
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Select Date Range")
-
-        val layout = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
+        val layout = android.widget.LinearLayout(this).apply {
+            orientation = android.widget.LinearLayout.VERTICAL
             setPadding(48, 24, 48, 24)
         }
 
@@ -112,7 +116,6 @@ class ExpenseListActivity : AppCompatActivity() {
             textSize = 16f
             setPadding(0, 8, 0, 16)
         }
-
         val tvEndDate = TextView(this).apply {
             text = "End Date: Tap to select"
             textSize = 16f
@@ -124,47 +127,46 @@ class ExpenseListActivity : AppCompatActivity() {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
         tvStartDate.setOnClickListener {
-            val calendar = Calendar.getInstance()
+            val cal = Calendar.getInstance()
             DatePickerDialog(this, { _, year, month, day ->
-                val cal = Calendar.getInstance().apply { set(year, month, day) }
-                startDate = dateFormat.format(cal.time)
+                val c = Calendar.getInstance().apply { set(year, month, day) }
+                startDate = dateFormat.format(c.time)
                 tvStartDate.text = "Start Date: $startDate"
-            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
+            }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show()
         }
 
         tvEndDate.setOnClickListener {
-            val calendar = Calendar.getInstance()
+            val cal = Calendar.getInstance()
             DatePickerDialog(this, { _, year, month, day ->
-                val cal = Calendar.getInstance().apply { set(year, month, day) }
-                endDate = dateFormat.format(cal.time)
+                val c = Calendar.getInstance().apply { set(year, month, day) }
+                endDate = dateFormat.format(c.time)
                 tvEndDate.text = "End Date: $endDate"
-            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
+            }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show()
         }
 
         layout.addView(tvStartDate)
         layout.addView(tvEndDate)
 
-        builder.setView(layout)
-
-        builder.setPositiveButton("Apply") { _, _ ->
-            if (startDate.isNotEmpty() && endDate.isNotEmpty()) {
-                currentStartDate = startDate
-                currentEndDate = endDate
-                loadExpenses()
-            } else {
-                Toast.makeText(this, "Please select both dates", Toast.LENGTH_SHORT).show()
+        AlertDialog.Builder(this)
+            .setTitle("Select Date Range")
+            .setView(layout)
+            .setPositiveButton("Apply") { _, _ ->
+                if (startDate.isNotEmpty() && endDate.isNotEmpty()) {
+                    currentStartDate = startDate
+                    currentEndDate = endDate
+                    loadExpenses()
+                } else {
+                    Toast.makeText(this, "Please select both dates", Toast.LENGTH_SHORT).show()
+                }
             }
-        }
-
-        builder.setNeutralButton("Reset") { _, _ ->
-            currentStartDate = null
-            currentEndDate = null
-            loadExpenses()
-            Toast.makeText(this, "Showing all expenses", Toast.LENGTH_SHORT).show()
-        }
-
-        builder.setNegativeButton("Cancel", null)
-        builder.show()
+            .setNeutralButton("Reset") { _, _ ->
+                currentStartDate = null
+                currentEndDate = null
+                loadExpenses()
+                Toast.makeText(this, "Showing all expenses", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     private fun showReceiptDialog(bitmap: android.graphics.Bitmap) {

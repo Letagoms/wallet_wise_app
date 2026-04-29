@@ -19,9 +19,11 @@ import java.util.*
 class AddExpenseActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddExpenseBinding
-    private lateinit var dbHelper: ExpenseDatabaseHelper
+    private lateinit var expenseManager: ExpenseManager
+    private lateinit var categoryManager: CategoryManager
     private var receiptPath: String? = null
     private var userId: Int = -1
+    private var categories: List<Category> = emptyList()
     private val PICK_IMAGE = 100
     private val CAPTURE_IMAGE = 101
 
@@ -30,16 +32,11 @@ class AddExpenseActivity : AppCompatActivity() {
         binding = ActivityAddExpenseBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        dbHelper = ExpenseDatabaseHelper(this)
+        expenseManager = ExpenseManager(this)
+        categoryManager = CategoryManager(this)
         userId = intent.getIntExtra("USER_ID", -1)
 
-        val categories = arrayOf(
-            "Select category", "Groceries", "Dining", "Transport",
-            "Entertainment", "Housing", "Shopping", "Healthcare", "Other"
-        )
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.spinnerCategory.adapter = adapter
+        loadCategories()
 
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val displayDateFormat = SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault())
@@ -48,6 +45,21 @@ class AddExpenseActivity : AppCompatActivity() {
 
         binding.btnAddReceipt.setOnClickListener { showImagePickerDialog() }
         binding.btnAddExpense.setOnClickListener { saveExpense(dateFormat.format(today)) }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadCategories()
+    }
+
+    private fun loadCategories() {
+        categories = categoryManager.getCategories(userId)
+        val names = mutableListOf("Select category")
+        names.addAll(categories.map { it.name })
+
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, names)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spinnerCategory.adapter = adapter
     }
 
     private fun showImagePickerDialog() {
@@ -100,26 +112,28 @@ class AddExpenseActivity : AppCompatActivity() {
             return
         }
 
-        val category = binding.spinnerCategory.selectedItem.toString()
-        if (category == "Select category") {
+        val selectedPosition = binding.spinnerCategory.selectedItemPosition
+        if (selectedPosition == 0) {
             Toast.makeText(this, "Please select a category", Toast.LENGTH_SHORT).show()
             return
         }
 
+        val categoryId = categories[selectedPosition - 1].id
         val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
         val currentTime = timeFormat.format(Date())
-        val description = binding.etDescription.text.toString().ifEmpty { category }
+        val description = binding.etDescription.text.toString().ifEmpty { "Expense" }
 
         val expense = Expense(
             amount = amountText.toDouble(),
             date = currentDate,
             time = currentTime,
-            category = category,
+            categoryId = categoryId,
             description = description,
-            receiptPath = receiptPath
+            receiptPath = receiptPath,
+            userId = userId
         )
 
-        val result = dbHelper.insertExpense(expense, userId)
+        val result = expenseManager.addExpense(expense)
         if (result != -1L) {
             Toast.makeText(this, "Expense added!", Toast.LENGTH_SHORT).show()
             finish()
