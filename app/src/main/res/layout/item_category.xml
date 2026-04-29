@@ -15,20 +15,32 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- ── TOP ROW: Icon + Name/Status + Amount ── -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
-            <ImageView
-                android:id="@+id/categoryIcon"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+            <!-- Colored rounded-square icon background -->
+            <LinearLayout
+                android:id="@+id/iconBackground"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:gravity="center"
                 android:layout_marginEnd="12dp"
-                android:src="@drawable/ic_home"
-                android:contentDescription="Category Icon" />
+                android:background="@drawable/bg_icon_rounded">
 
+                <ImageView
+                    android:id="@+id/categoryIcon"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:src="@drawable/ic_home"
+                    android:tint="#FFFFFF"
+                    android:contentDescription="Category Icon" />
+            </LinearLayout>
+
+            <!-- Name + remaining/over-budget text (takes remaining space) -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -54,6 +66,7 @@
                     android:layout_marginTop="2dp" />
             </LinearLayout>
 
+            <!-- Right side: spent amount + goal range -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -67,7 +80,8 @@
                     android:text="R0.00"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    android:textColor="#1A1A2E" />
+                    android:textColor="#1A1A2E"
+                    android:gravity="end" />
 
                 <TextView
                     android:id="@+id/categoryGoal"
@@ -76,11 +90,13 @@
                     android:text="of R0.00–R0.00"
                     android:textSize="11sp"
                     android:textColor="#8A8FA8"
+                    android:gravity="end"
                     android:layout_marginTop="2dp" />
             </LinearLayout>
 
         </LinearLayout>
 
+        <!-- ── PROGRESS BAR ── -->
         <ProgressBar
             android:id="@+id/categoryProgress"
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
@@ -89,7 +105,8 @@
             android:layout_marginTop="12dp"
             android:max="100"
             android:progress="50"
-            android:progressDrawable="@drawable/progress_bar_blue" />
+            android:progressDrawable="@drawable/progress_bar_blue"
+            android:indeterminate="false" />
 
     </LinearLayout>
 

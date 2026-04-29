@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Place in res/drawable/progress_bar_red.xml
+     Used when a category is over budget -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
     <item android:id="@android:id/background">
-        <shape>
-            <solid android:color="#E0E0E0" />
-            <corners android:radius="4dp" />
+        <shape android:shape="rectangle">
+            <solid android:color="#E8EAF0" />
+            <corners android:radius="3dp" />
         </shape>
     </item>
+
     <item android:id="@android:id/progress">
         <clip>
-            <shape>
-                <solid android:color="#CC0000" />
-                <corners android:radius="4dp" />
+            <shape android:shape="rectangle">
+                <solid android:color="#E53935" />
+                <corners android:radius="3dp" />
             </shape>
         </clip>
     </item>
+
 </layer-list>

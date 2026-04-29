@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#E8EBFF" />
-    <corners android:radius="12dp" />
-    <stroke android:width="2dp" android:color="#2348D6" />
-</shape>
+<!-- Place in res/drawable/progress_bar_blue.xml
+     Used for normal (within budget) progress bars -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Track (background) -->
+    <item android:id="@android:id/background">
+        <shape android:shape="rectangle">
+            <solid android:color="#E8EAF0" />
+            <corners android:radius="3dp" />
+        </shape>
+    </item>
+
+    <!-- Filled progress -->
+    <item android:id="@android:id/progress">
+        <clip>
+            <shape android:shape="rectangle">
+                <solid android:color="#2348D6" />
+                <corners android:radius="3dp" />
+            </shape>
+        </clip>
+    </item>
+
+</layer-list>

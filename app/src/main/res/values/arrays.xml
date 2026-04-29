@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!-- Theme Colors -->
+<string-array name="category_colors">
+    <item>@color/blue</item>
+    <item>@color/green</item>
+    <item>@color/red</item>
+    <item>@color/orange</item>
+    <item>@color/purple</item>
+    <item>@color/light_blue</item>
+    <item>@color/gray</item>
+</string-array>
+
+<!-- Icon Options -->
+<string-array name="category_icons">
+    <item>@drawable/ic_home</item>
+    <item>@drawable/ic_receipt</item>
+    <item>@drawable/ic_restaurant</item>
+    <item>@drawable/ic_sports_esports</item>
+    <item>@drawable/ic_medical_services</item>
+    <item>@drawable/ic_flight</item>
+    <item>@drawable/ic_directions_car</item>
+    <item>@drawable/ic_card_giftcard</item>
+</string-array>
+
+<!-- Display Names for Icons (optional, if you want text labels in Spinner) -->
+<string-array name="category_icon_labels">
+    <item>House</item>
+    <item>Car</item>
+    <item>Food &amp; Dining</item>
+    <item>Gift</item>
+    <item>Travel</item>
+    <item>Medical</item>
+    <item>Notes</item>
+    <item>Games</item>
+</string-array>
+</resources>

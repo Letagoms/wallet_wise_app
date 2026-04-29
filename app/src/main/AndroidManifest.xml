@@ -13,7 +13,7 @@
         android:theme="@style/Theme.Wallet_wise_app">
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".ExpenseListActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,21 +21,21 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".RegisterActivity" android:exported="false" />
-        <activity android:name=".ExpenseListActivity" android:exported="false" />
-        <activity android:name=".AddExpenseActivity" android:exported="false" />
-        <activity android:name=".BudgetActivity" android:exported="false" />
-        <activity android:name=".CreateCategoryActivity" android:exported="false" />
+        <activity
+            android:name=".AddExpenseActivity"
+            android:exported="false" />
 
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
+        <activity
+            android:name=".Budget"
+            android:exported="false" />
+
+        <activity
+            android:name=".CreateCategory"
+            android:exported="false" />
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
 
     </application>
 

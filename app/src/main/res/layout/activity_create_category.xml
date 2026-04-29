@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:background="#F0F2F8">
 
-    <!-- TOP TOOLBAR -->
+    <!-- ── TOP TOOLBAR ── -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
@@ -34,19 +34,24 @@
             android:textColor="#1A1A2E" />
     </LinearLayout>
 
-    <!-- SCROLLABLE FORM -->
+    <!-- ── SCROLLABLE FORM ── -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:overScrollMode="never"
+        android:scrollbarThumbVertical="@android:color/transparent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="24dp">
 
-            <!-- CATEGORY NAME -->
+            <!--CATEGORY NAME  -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -61,13 +66,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:hint="e.g. Groceries"
+                android:textColor="#1A1A2E"
                 android:textSize="15sp"
+                android:inputType="text"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:background="@drawable/bg_input_field"
                 android:layout_marginBottom="20dp" />
 
-            <!-- MINIMUM MONTHLY GOAL -->
+            <!-- ════ MINIMUM MONTHLY GOAL ════ -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -100,12 +107,13 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:hint="0.00"
+                    android:textColor="#1A1A2E"
                     android:textSize="15sp"
                     android:inputType="numberDecimal"
                     android:background="@android:color/transparent" />
             </LinearLayout>
 
-            <!-- MAXIMUM MONTHLY GOAL -->
+            <!-- ════ MAXIMUM MONTHLY GOAL ════ -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -138,12 +146,13 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:hint="0.00"
+                    android:textColor="#1A1A2E"
                     android:textSize="15sp"
                     android:inputType="numberDecimal"
                     android:background="@android:color/transparent" />
             </LinearLayout>
 
-            <!-- SLIDER -->
+            <!-- ── SLIDER ── -->
             <com.google.android.material.slider.Slider
                 android:id="@+id/maxGoalSlider"
                 android:layout_width="match_parent"
@@ -157,7 +166,74 @@
                 app:trackColorActive="#2348D6"
                 app:trackColorInactive="#C8CCE0" />
 
-            <!-- SELECT ICON -->
+            <!-- ════ CATEGORY THEME COLOR ════ -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Category Theme Color"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#1A1A2E"
+                android:layout_marginBottom="12dp" />
+
+            <LinearLayout
+                android:id="@+id/colorPickerRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="24dp">
+
+                <ImageView android:id="@+id/colorBlue"
+                    android:layout_width="46dp" android:layout_height="46dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/circle_blue"
+                    android:src="@drawable/circle_color_selected"
+                    android:contentDescription="Blue" />
+
+                <ImageView android:id="@+id/colorGreen"
+                    android:layout_width="46dp" android:layout_height="46dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/circle_green"
+                    android:src="@drawable/circle_color_normal"
+                    android:contentDescription="Green" />
+
+                <ImageView android:id="@+id/colorRed"
+                    android:layout_width="46dp" android:layout_height="46dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/circle_red"
+                    android:src="@drawable/circle_color_normal"
+                    android:contentDescription="Red" />
+
+                <ImageView android:id="@+id/colorOrange"
+                    android:layout_width="46dp" android:layout_height="46dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/circle_orange"
+                    android:src="@drawable/circle_color_normal"
+                    android:contentDescription="Orange" />
+
+                <ImageView android:id="@+id/colorPurple"
+                    android:layout_width="46dp" android:layout_height="46dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/circle_purple"
+                    android:src="@drawable/circle_color_normal"
+                    android:contentDescription="Purple" />
+
+                <ImageView android:id="@+id/colorLightBlue"
+                    android:layout_width="46dp" android:layout_height="46dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/circle_light_blue"
+                    android:src="@drawable/circle_color_normal"
+                    android:contentDescription="Light Blue" />
+
+                <ImageView android:id="@+id/colorGray"
+                    android:layout_width="46dp" android:layout_height="46dp"
+                    android:background="@drawable/circle_gray"
+                    android:src="@drawable/circle_color_normal"
+                    android:contentDescription="Gray" />
+
+            </LinearLayout>
+
+            <!-- ════ SELECT ICON ════ -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -167,39 +243,44 @@
                 android:textColor="#1A1A2E"
                 android:layout_marginBottom="12dp" />
 
+            <!-- Icon Row 1 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:weightSum="4"
                 android:layout_marginBottom="10dp">
 
                 <LinearLayout android:id="@+id/iconHouse"
                     android:layout_width="0dp" android:layout_height="80dp"
-                    android:layout_weight="1" android:layout_marginEnd="8dp"
+                    android:layout_weight="1" android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:background="@drawable/bg_icon_cell_selected">
                     <ImageView android:layout_width="32dp" android:layout_height="32dp"
                         android:src="@drawable/ic_home"
+                        app:tint="#2348D6"
                         android:contentDescription="Home" />
                 </LinearLayout>
 
                 <LinearLayout android:id="@+id/iconCar"
                     android:layout_width="0dp" android:layout_height="80dp"
-                    android:layout_weight="1" android:layout_marginEnd="8dp"
+                    android:layout_weight="1" android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:background="@drawable/bg_icon_cell_normal">
                     <ImageView android:layout_width="32dp" android:layout_height="32dp"
                         android:src="@drawable/ic_directions_car"
+                        app:tint="#5A6075"
                         android:contentDescription="Car" />
                 </LinearLayout>
 
                 <LinearLayout android:id="@+id/iconFood"
                     android:layout_width="0dp" android:layout_height="80dp"
-                    android:layout_weight="1" android:layout_marginEnd="8dp"
+                    android:layout_weight="1" android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:background="@drawable/bg_icon_cell_normal">
                     <ImageView android:layout_width="32dp" android:layout_height="32dp"
                         android:src="@drawable/ic_restaurant"
+                        app:tint="#5A6075"
                         android:contentDescription="Food" />
                 </LinearLayout>
 
@@ -210,44 +291,49 @@
                     android:background="@drawable/bg_icon_cell_normal">
                     <ImageView android:layout_width="32dp" android:layout_height="32dp"
                         android:src="@drawable/ic_card_giftcard"
+                        app:tint="#5A6075"
                         android:contentDescription="Gift" />
                 </LinearLayout>
 
             </LinearLayout>
 
+            <!-- Icon Row 2 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="24dp">
+                android:weightSum="4">
 
                 <LinearLayout android:id="@+id/iconFlight"
                     android:layout_width="0dp" android:layout_height="80dp"
-                    android:layout_weight="1" android:layout_marginEnd="8dp"
+                    android:layout_weight="1" android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:background="@drawable/bg_icon_cell_normal">
                     <ImageView android:layout_width="32dp" android:layout_height="32dp"
                         android:src="@drawable/ic_flight"
+                        app:tint="#5A6075"
                         android:contentDescription="Flight" />
                 </LinearLayout>
 
                 <LinearLayout android:id="@+id/iconMedical"
                     android:layout_width="0dp" android:layout_height="80dp"
-                    android:layout_weight="1" android:layout_marginEnd="8dp"
+                    android:layout_weight="1" android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:background="@drawable/bg_icon_cell_normal">
                     <ImageView android:layout_width="32dp" android:layout_height="32dp"
                         android:src="@drawable/ic_medical_services"
+                        app:tint="#5A6075"
                         android:contentDescription="Medical" />
                 </LinearLayout>
 
                 <LinearLayout android:id="@+id/iconReceipt"
                     android:layout_width="0dp" android:layout_height="80dp"
-                    android:layout_weight="1" android:layout_marginEnd="8dp"
+                    android:layout_weight="1" android:layout_marginEnd="10dp"
                     android:gravity="center"
                     android:background="@drawable/bg_icon_cell_normal">
                     <ImageView android:layout_width="32dp" android:layout_height="32dp"
                         android:src="@drawable/ic_receipt"
+                        app:tint="#5A6075"
                         android:contentDescription="Receipt" />
                 </LinearLayout>
 
@@ -258,6 +344,7 @@
                     android:background="@drawable/bg_icon_cell_normal">
                     <ImageView android:layout_width="32dp" android:layout_height="32dp"
                         android:src="@drawable/ic_sports_esports"
+                        app:tint="#5A6075"
                         android:contentDescription="Games" />
                 </LinearLayout>
 
@@ -266,16 +353,27 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- CREATE BUTTON -->
-    <Button
-        android:id="@+id/btnCreateCategory"
+    <!-- ── CREATE BUTTON (pinned to bottom) ── -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:text="Create Category"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="@android:color/white"
-        android:backgroundTint="#2348D6"
-        android:layout_margin="16dp" />
+        android:layout_height="wrap_content"
+        android:background="#F0F2F8"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="16dp">
+
+        <Button
+            android:id="@+id/btnCreateCategory"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Create Category"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#2348D6"
+            android:stateListAnimator="@null"
+            app:cornerRadius="14dp" />
+    </LinearLayout>
 
 </LinearLayout>
