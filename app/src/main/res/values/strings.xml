@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">wallet_wise_app</string>
+    <string name="app_name">wallet wise</string>
     <string name="prompt_color">Select Theme Color</string>
     <string name="prompt_icon">Select Icon</string>
 </resources>

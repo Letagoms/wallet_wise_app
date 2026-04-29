@@ -15,7 +15,7 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- ── TOP ROW: Icon + Name/Status + Amount ── -->
+        <!--TOP ROW: Icon + Name/Status + Amount-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -96,7 +96,7 @@
 
         </LinearLayout>
 
-        <!-- ── PROGRESS BAR ── -->
+        <!--PROGRESS BAR -->
         <ProgressBar
             android:id="@+id/categoryProgress"
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"

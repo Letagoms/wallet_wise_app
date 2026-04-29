@@ -13,13 +13,21 @@
         android:theme="@style/Theme.Wallet_wise_app">
 
         <activity
-            android:name=".ExpenseListActivity"
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ExpenseListActivity"
+            android:exported="false" />
 
         <activity
             android:name=".AddExpenseActivity"

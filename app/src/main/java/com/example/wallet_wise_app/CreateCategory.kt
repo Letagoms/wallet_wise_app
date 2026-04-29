@@ -16,18 +16,15 @@ import com.google.android.material.slider.Slider
 class CreateCategory : AppCompatActivity() {
 
     private lateinit var dbHelper: DatabaseHelper
+    private var userId: Int = -1
 
     // Tracks current selections
-    private var selectedColorResId: Int = android.R.color.holo_blue_dark  // default blue
-    private var selectedIconResId:  Int = R.drawable.ic_home               // default house
+    private var selectedColorResId: Int = android.R.color.holo_blue_dark
+    private var selectedIconResId:  Int = R.drawable.ic_home
 
-    // Color circle views
-    private lateinit var colorViews: List<Pair<ImageView, Int>>   // view → colorResId
+    private lateinit var colorViews: List<Pair<ImageView, Int>>
+    private lateinit var iconCells: List<Pair<LinearLayout, Int>>
 
-    // Icon cell views
-    private lateinit var iconCells: List<Pair<LinearLayout, Int>> // view → iconResId
-
-    // Currently highlighted views
     private var selectedColorView: ImageView?   = null
     private var selectedIconCell:  LinearLayout? = null
 
@@ -36,20 +33,16 @@ class CreateCategory : AppCompatActivity() {
         setContentView(R.layout.activity_create_category)
 
         dbHelper = DatabaseHelper(this)
+        userId = intent.getIntExtra("USER_ID", -1)
 
-        // ── Field references ──
         val nameField:   EditText = findViewById(R.id.categoryNameInput)
         val minField:    EditText = findViewById(R.id.minGoalInput)
         val maxField:    EditText = findViewById(R.id.maxGoalInput)
         val slider:      Slider   = findViewById(R.id.maxGoalSlider)
         val createButton: Button  = findViewById(R.id.btnCreateCategory)
 
-        // Back button
         findViewById<ImageButton>(R.id.btnBack).setOnClickListener { finish() }
 
-        //
-        // SLIDER FOR MAX GOAL FIELD (two-way binding)
-        //
         slider.addOnChangeListener { _, value, fromUser ->
             if (fromUser) {
                 maxField.setText("%.2f".format(value))
@@ -61,7 +54,6 @@ class CreateCategory : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {
                 val value = s.toString().toFloatOrNull() ?: return
                 if (value in slider.valueFrom..slider.valueTo) {
-                    // Round to nearest stepSize (100) to avoid slider crash
                     val stepped = (value / 100f).toInt() * 100f
                     slider.value = stepped
                 }
@@ -70,9 +62,6 @@ class CreateCategory : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
-        //
-        // COLOR PICKER
-        //
         colorViews = listOf(
             Pair(findViewById(R.id.colorBlue),      android.R.color.holo_blue_dark),
             Pair(findViewById(R.id.colorGreen),     android.R.color.holo_green_dark),
@@ -83,24 +72,18 @@ class CreateCategory : AppCompatActivity() {
             Pair(findViewById(R.id.colorGray),      R.color.gray)
         )
 
-        // Set blue as default selected
         selectedColorView = colorViews[0].first
         selectedColorResId = colorViews[0].second
 
         colorViews.forEach { (view, colorResId) ->
             view.setOnClickListener {
-                // Remove ring from previously selected
                 selectedColorView?.setImageResource(R.drawable.circle_color_normal)
-                // Apply ring to newly selected
                 view.setImageResource(R.drawable.circle_color_selected)
                 selectedColorView  = view
                 selectedColorResId = colorResId
             }
         }
 
-        //
-        // ICON GRID
-        //
         iconCells = listOf(
             Pair(findViewById(R.id.iconHouse),   R.drawable.ic_home),
             Pair(findViewById(R.id.iconCar),     R.drawable.ic_directions_car),
@@ -112,32 +95,20 @@ class CreateCategory : AppCompatActivity() {
             Pair(findViewById(R.id.iconGames),   R.drawable.ic_sports_esports)
         )
 
-        // Set house as default selected
         selectedIconCell  = iconCells[0].first
         selectedIconResId = iconCells[0].second
 
         iconCells.forEach { (cell, iconResId) ->
             cell.setOnClickListener {
-                // Remove highlight from previously selected
-                selectedIconCell?.background =
-                    ContextCompat.getDrawable(this, R.drawable.bg_icon_cell_normal)
-                // Apply highlight to newly selected
-                cell.background =
-                    ContextCompat.getDrawable(this, R.drawable.bg_icon_cell_selected)
-                // Also update the icon tint: selected = blue, others = gray
-                selectedIconCell?.findViewById<ImageView>(android.R.id.icon)
-                    ?.setColorFilter(ContextCompat.getColor(this, android.R.color.darker_gray))
-                cell.findViewById<ImageView>(android.R.id.icon)
-                    ?.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_blue_dark))
-
+                selectedIconCell?.background = ContextCompat.getDrawable(this, R.drawable.bg_icon_cell_normal)
+                cell.background = ContextCompat.getDrawable(this, R.drawable.bg_icon_cell_selected)
+                selectedIconCell?.findViewById<ImageView>(android.R.id.icon)?.setColorFilter(ContextCompat.getColor(this, android.R.color.darker_gray))
+                cell.findViewById<ImageView>(android.R.id.icon)?.setColorFilter(ContextCompat.getColor(this, android.R.color.holo_blue_dark))
                 selectedIconCell  = cell
                 selectedIconResId = iconResId
             }
         }
 
-        //
-        // CREATE BUTTON
-        //
         createButton.setOnClickListener {
             val name    = nameField.text.toString().trim()
             val minGoal = minField.text.toString().toDoubleOrNull() ?: 0.0
@@ -145,10 +116,6 @@ class CreateCategory : AppCompatActivity() {
 
             if (name.isBlank()) {
                 Toast.makeText(this, "Category name cannot be empty", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            if (minGoal > maxGoal) {
-                Toast.makeText(this, "Minimum goal cannot exceed maximum goal", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -160,7 +127,7 @@ class CreateCategory : AppCompatActivity() {
                 iconResId  = selectedIconResId
             )
 
-            dbHelper.insertCategory(category)
+            dbHelper.insertCategory(category, userId)
             Toast.makeText(this, "Category created successfully!", Toast.LENGTH_SHORT).show()
             finish()
         }

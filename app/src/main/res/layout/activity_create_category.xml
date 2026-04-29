@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:background="#F0F2F8">
 
-    <!-- ── TOP TOOLBAR ── -->
+    <!-- TOP TOOLBAR -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
@@ -34,7 +34,7 @@
             android:textColor="#1A1A2E" />
     </LinearLayout>
 
-    <!-- ── SCROLLABLE FORM ── -->
+    <!-- SCROLLABLE FORM -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -113,7 +113,7 @@
                     android:background="@android:color/transparent" />
             </LinearLayout>
 
-            <!-- ════ MAXIMUM MONTHLY GOAL ════ -->
+            <!--MAXIMUM MONTHLY GOAL -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -152,7 +152,7 @@
                     android:background="@android:color/transparent" />
             </LinearLayout>
 
-            <!-- ── SLIDER ── -->
+            <!-- SLIDER -->
             <com.google.android.material.slider.Slider
                 android:id="@+id/maxGoalSlider"
                 android:layout_width="match_parent"
@@ -166,7 +166,7 @@
                 app:trackColorActive="#2348D6"
                 app:trackColorInactive="#C8CCE0" />
 
-            <!-- ════ CATEGORY THEME COLOR ════ -->
+            <!-- CATEGORY THEME COLOR -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -233,7 +233,7 @@
 
             </LinearLayout>
 
-            <!-- ════ SELECT ICON ════ -->
+            <!--  SELECT ICON  -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -353,7 +353,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- ── CREATE BUTTON (pinned to bottom) ── -->
+    <!--CREATE BUTTON (pinned to bottom) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
