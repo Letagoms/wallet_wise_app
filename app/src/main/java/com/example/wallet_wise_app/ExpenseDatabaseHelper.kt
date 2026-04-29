@@ -97,4 +97,25 @@ class ExpenseDatabaseHelper(context: Context) : SQLiteOpenHelper(
             }
         }
     }
+    fun getExpensesByDateRange(startDate: String, endDate: String, userId: Int): List<Expense> {
+        val cursor = readableDatabase.rawQuery(
+            "SELECT * FROM $TABLE_EXPENSES WHERE $COLUMN_DATE BETWEEN ? AND ? AND $COLUMN_USER_ID = ? ORDER BY $COLUMN_DATE DESC, $COLUMN_TIME DESC",
+            arrayOf(startDate, endDate, userId.toString())
+        )
+        return cursor.use {
+            mutableListOf<Expense>().apply {
+                while (it.moveToNext()) {
+                    add(Expense(
+                        id = it.getInt(it.getColumnIndexOrThrow(COLUMN_ID)),
+                        amount = it.getDouble(it.getColumnIndexOrThrow(COLUMN_AMOUNT)),
+                        date = it.getString(it.getColumnIndexOrThrow(COLUMN_DATE)),
+                        time = it.getString(it.getColumnIndexOrThrow(COLUMN_TIME)),
+                        category = it.getString(it.getColumnIndexOrThrow(COLUMN_CATEGORY)),
+                        description = it.getString(it.getColumnIndexOrThrow(COLUMN_DESCRIPTION)),
+                        receiptPath = it.getString(it.getColumnIndexOrThrow(COLUMN_RECEIPT_PATH))
+                    ))
+                }
+            }
+        }
+    }
 }
