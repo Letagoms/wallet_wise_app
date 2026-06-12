@@ -6,6 +6,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.wallet_wise_app.database.migrations.CategoryManager
+import com.example.wallet_wise_app.database.migrations.ExpenseManager
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale

@@ -11,6 +11,8 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.example.wallet_wise_app.database.DatabaseHelper
+import com.example.wallet_wise_app.models.Category
 import com.google.android.material.slider.Slider
 
 class CreateCategory : AppCompatActivity() {
@@ -120,11 +122,11 @@ class CreateCategory : AppCompatActivity() {
             }
 
             val category = Category(
-                name       = name,
-                minGoal    = minGoal,
-                maxGoal    = maxGoal,
+                name = name,
+                minGoal = minGoal,
+                maxGoal = maxGoal,
                 colorResId = selectedColorResId,
-                iconResId  = selectedIconResId
+                iconResId = selectedIconResId
             )
 
             dbHelper.insertCategory(category, userId)

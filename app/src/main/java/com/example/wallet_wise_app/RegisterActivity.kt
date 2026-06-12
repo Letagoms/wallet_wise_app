@@ -3,6 +3,7 @@ package com.example.wallet_wise_app
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.wallet_wise_app.database.migrations.AuthManager
 import com.example.wallet_wise_app.databinding.ActivityRegisterBinding
 
 class RegisterActivity : AppCompatActivity() {

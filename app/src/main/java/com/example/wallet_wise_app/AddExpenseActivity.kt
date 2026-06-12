@@ -11,7 +11,9 @@ import android.provider.MediaStore
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.wallet_wise_app.database.DatabaseHelper
 import com.example.wallet_wise_app.databinding.ActivityAddExpenseBinding
+import com.example.wallet_wise_app.models.Expense
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException

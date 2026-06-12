@@ -34,7 +34,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".Budget"
+            android:name=".repository.Budget"
             android:exported="false" />
 
         <activity
