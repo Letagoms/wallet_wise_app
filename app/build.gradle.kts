@@ -4,12 +4,8 @@ plugins {
 
 android {
     namespace = "com.example.wallet_wise_app"
-    compileSdk {
-        version = release(36)
-    }
-    buildFeatures {
-        viewBinding = true
-    }
+    compileSdk = 36
+
     defaultConfig {
         applicationId = "com.example.wallet_wise_app"
         minSdk = 24
@@ -29,6 +25,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -44,4 +41,15 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-}
+
+    implementation("com.google.android.material:material:1.11.0")
+
+        implementation("com.google.mlkit:text-recognition:16.0.0")
+
+        // Camera X (for taking photos)
+        implementation("androidx.camera:camera-core:1.3.0")
+        implementation("androidx.camera:camera-camera2:1.3.0")
+        implementation("androidx.camera:camera-lifecycle:1.3.0")
+        implementation("androidx.camera:camera-view:1.3.0")
+    }
+

@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Permissions - MUST be before <application> tag -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,8 +18,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Wallet_wise_app">
 
+        <!-- Create Expense Activity (Launcher / Main Screen) -->
         <activity
-            android:name=".activities.LoginActivity"
+            android:name=".screens.CreateExpenseActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,28 +28,9 @@
             </intent-filter>
         </activity>
 
+        <!-- Expense List Activity -->
         <activity
-            android:name=".activities.RegisterActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".activities.ExpenseListActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".activities.AddExpenseActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".repository.Budget"
-            android:exported="false" />
-
-        <activity
-            android:name=".activities.CreateCategory"
-            android:exported="false" />
-
-        <activity
-            android:name=".activities.MainActivity"
+            android:name=".screens.ExpenseListActivity"
             android:exported="false" />
 
     </application>
