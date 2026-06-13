@@ -1,0 +1,4 @@
+package com.example.wallet_wise_app.repository
+
+interface ExpenseRepository {
+}
