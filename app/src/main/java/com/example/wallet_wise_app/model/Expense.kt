@@ -1,5 +1,5 @@
 // models/Expense.kt
-package com.example.wallet_wise_app.models
+package com.example.wallet_wise_app.model
 
 data class Expense(
     val id: Int = 0,

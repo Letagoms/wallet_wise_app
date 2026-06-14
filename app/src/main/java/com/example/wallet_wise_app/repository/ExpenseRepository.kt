@@ -1,21 +1,22 @@
+// repository/ExpenseRepository.kt
 // This class acts as a BRIDGE between the Service layer and the Database layer
 // It translates app operations into database operations
 // Notice: NO business logic here - just pure database operations
 
-package com.example.wallet_wise_app.repositories
+package com.example.wallet_wise_app.repository
 
 import android.content.Context
 import com.example.wallet_wise_app.database.DatabaseHelper
 import com.example.wallet_wise_app.database.ExpenseTable
-import com.example.wallet_wise_app.models.Expense
+import com.example.wallet_wise_app.model.Expense
 
 // Repository takes Context to create DatabaseHelper
 // Context = app information (needed to access database files)
 class ExpenseRepository(private val context: Context) {
 
-    // Creates the database helper instance
+    // FIXED: Creates the database helper instance using Singleton pattern
     // This is the ONLY place that directly talks to DatabaseHelper
-    private val dbHelper = DatabaseHelper(context)
+    private val dbHelper = DatabaseHelper.getInstance(context)  // ← CHANGE THIS LINE
 
     // ========== SAVE (CREATE) ==========
     // Takes an Expense object (without an ID usually, or ID=0)
@@ -28,8 +29,8 @@ class ExpenseRepository(private val context: Context) {
         // Returns the auto-generated ID from database (e.g., 5)
         val id = ExpenseTable.insert(db, expense)
 
-        // Close database connection to free resources
-        db.close()
+        // DO NOT close db here - let the singleton manage it
+        // db.close()  // ← REMOVE THIS LINE
 
         // Return a COPY of the original expense WITH the new ID
         // copy() creates a new Expense object with same values but updated id
@@ -47,8 +48,8 @@ class ExpenseRepository(private val context: Context) {
         // Call ExpenseTable to run SELECT query
         val expenses = ExpenseTable.getAll(db)
 
-        // Close connection
-        db.close()
+        // DO NOT close db here - let the singleton manage it
+        // db.close()  // ← REMOVE THIS LINE
 
         // Return the list of expenses (empty list if none found)
         return expenses

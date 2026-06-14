@@ -1,53 +1,92 @@
 // database/DatabaseHelper.kt
-// This class manages the SQLite database - creates, upgrades, and provides access
-
 package com.example.wallet_wise_app.database
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import com.example.wallet_wise_app.models.Expense
+import com.example.wallet_wise_app.model.Expense
+import com.example.wallet_wise_app.model.Goal
+import com.example.wallet_wise_app.model.Category
 
-class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+class DatabaseHelper private constructor(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
         private const val DATABASE_NAME = "wallet_wise.db"
-        private const val DATABASE_VERSION = 4
+        private const val DATABASE_VERSION = 6
+
+        @Volatile
+        private var INSTANCE: DatabaseHelper? = null
+
+        fun getInstance(context: Context): DatabaseHelper {
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: DatabaseHelper(context.applicationContext).also { INSTANCE = it }
+            }
+        }
     }
 
-    // In DatabaseHelper.kt, add this line to onCreate():
     override fun onCreate(db: SQLiteDatabase) {
         ExpenseTable.createTable(db)
-        GoalTable.createTable(db)  // ← ADD THIS LINE
+        GoalTable.createTable(db)
+        CategoryTable.createTable(db)
     }
 
-    // In onUpgrade(), add:
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         ExpenseTable.dropTable(db)
-        GoalTable.dropTable(db)  // ← ADD THIS LINE
+        GoalTable.dropTable(db)
+        CategoryTable.dropTable(db)
         onCreate(db)
     }
 
-    // Public method to save an expense to the database
-    // Takes an Expense object (from models/Expense.kt) and returns the auto-generated ID
+    // ========== EXPENSE METHODS ==========
     fun insertExpense(expense: Expense): Long {
-        // writableDatabase = allows reading AND writing
         val db = writableDatabase
-        // Delegate the actual insert operation to ExpenseTable
-        val id = ExpenseTable.insert(db, expense)
-        // Always close the database connection to free resources
-        db.close()
-        return id
+        return ExpenseTable.insert(db, expense)
     }
 
-    // Public method to retrieve all expenses from the database
     fun getAllExpenses(): List<Expense> {
-        // readableDatabase = allows only reading
         val db = readableDatabase
-        // Delegate the query to ExpenseTable
-        val expenses = ExpenseTable.getAll(db)
-        // Close the connection
-        db.close()
-        return expenses
+        return ExpenseTable.getAll(db)
+    }
+
+    // ========== GOAL METHODS ==========
+    fun insertGoal(goal: Goal): Long {
+        val db = writableDatabase
+        return GoalTable.insert(db, goal)
+    }
+
+    fun getAllGoals(): List<Goal> {
+        val db = readableDatabase
+        return GoalTable.getAll(db)
+    }
+
+    fun getGoalsByUserId(userId: Int): List<Goal> {
+        val db = readableDatabase
+        return GoalTable.getByUserId(db, userId)
+    }
+
+    // ========== CATEGORY METHODS ==========
+    fun insertCategory(category: Category): Long {
+        val db = writableDatabase
+        return CategoryTable.insert(db, category)
+    }
+
+    fun getAllCategories(): List<Category> {
+        val db = readableDatabase
+        return CategoryTable.getAll(db)
+    }
+
+    fun getCategoriesByUserId(userId: Int): List<Category> {
+        val db = readableDatabase
+        return CategoryTable.getByUserId(db, userId)
+    }
+
+    fun categoryExists(categoryName: String, userId: Int): Boolean {
+        val db = readableDatabase
+        return CategoryTable.exists(db, categoryName, userId)
+    }
+
+    fun deleteCategory(categoryId: Int): Boolean {
+        val db = writableDatabase
+        return CategoryTable.deleteById(db, categoryId)
     }
 }

@@ -1,4 +1,4 @@
 package com.example.wallet_wise_app.screens
 
-class Login {
+class RegisterActivity {
 }

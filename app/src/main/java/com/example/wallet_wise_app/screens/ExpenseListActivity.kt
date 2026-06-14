@@ -5,14 +5,14 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.core.view.GravityCompat
 import com.example.wallet_wise_app.R
 import com.example.wallet_wise_app.database.DatabaseHelper
-import com.example.wallet_wise_app.models.Expense
+import com.example.wallet_wise_app.model.Expense
 import java.io.File
 import java.util.Locale
 
@@ -26,6 +26,8 @@ class ExpenseListActivity : AppCompatActivity() {
     private lateinit var navExpenseList: Button
     private lateinit var navViewGoals: Button
     private lateinit var navSetGoals: Button
+    private lateinit var navCreateCategory: Button
+    private lateinit var navViewCategories: Button
     private lateinit var dbHelper: DatabaseHelper
 
     private var expensesList: List<Expense> = emptyList()
@@ -33,6 +35,8 @@ class ExpenseListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_expense_list)
+
+        dbHelper = DatabaseHelper.getInstance(this)
 
         lvExpenses = findViewById(R.id.lvExpenses)
         emptyText = findViewById(R.id.emptyText)
@@ -42,24 +46,35 @@ class ExpenseListActivity : AppCompatActivity() {
         navExpenseList = findViewById(R.id.navExpenseList)
         navViewGoals = findViewById(R.id.navViewGoals)
         navSetGoals = findViewById(R.id.navSetGoals)
-        dbHelper = DatabaseHelper(this)
+        navCreateCategory = findViewById(R.id.navCreateCategory)
+        navViewCategories = findViewById(R.id.navViewCategories)
 
         btnMenu.setOnClickListener {
-            drawerLayout.openDrawer(Gravity.START)
+            drawerLayout.openDrawer(GravityCompat.START)
         }
 
         navExpenseList.setOnClickListener {
-            drawerLayout.closeDrawer(Gravity.START)
+            drawerLayout.closeDrawer(GravityCompat.START)
         }
 
         navViewGoals.setOnClickListener {
             startActivity(Intent(this, ViewGoalsActivity::class.java))
-            drawerLayout.closeDrawer(Gravity.START)
+            drawerLayout.closeDrawer(GravityCompat.START)
         }
 
         navSetGoals.setOnClickListener {
             startActivity(Intent(this, SetGoalsActivity::class.java))
-            drawerLayout.closeDrawer(Gravity.START)
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+
+        navCreateCategory.setOnClickListener {
+            startActivity(Intent(this, CreateCategoryActivity::class.java))
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+
+        navViewCategories.setOnClickListener {
+            startActivity(Intent(this, ViewCategoriesActivity::class.java))
+            drawerLayout.closeDrawer(GravityCompat.START)
         }
 
         btnAddExpense.setOnClickListener {
@@ -87,8 +102,8 @@ class ExpenseListActivity : AppCompatActivity() {
                     emptyText.visibility = android.view.View.GONE
 
                     val expenseStrings = expensesList.map {
-                        val hasPhoto = if (it.photo.isNotBlank()) "📷" else ""
-                        "${hasPhoto} ${it.name} - R${String.format(Locale.US, "%.2f", it.amount)}\n" +
+                        val hasPhoto = if (it.photo.isNotBlank()) "📷 " else ""
+                        "$hasPhoto${it.name} - R${String.format(Locale.US, "%.2f", it.amount)}\n" +
                                 "📁 ${it.category} | 📅 ${it.date} | 🕐 ${it.startTime} - ${it.endTime}\n" +
                                 "📝 ${it.description}"
                     }
@@ -100,7 +115,6 @@ class ExpenseListActivity : AppCompatActivity() {
                     )
                     lvExpenses.adapter = adapter
 
-                    // Handle item click to show image
                     lvExpenses.setOnItemClickListener { _, _, position, _ ->
                         val expense = expensesList[position]
                         if (expense.photo.isNotBlank()) {
@@ -115,23 +129,19 @@ class ExpenseListActivity : AppCompatActivity() {
     }
 
     private fun showImagePreview(photoPath: String, expenseName: String) {
-        // Check if file exists
         val imageFile = File(photoPath)
         if (!imageFile.exists()) {
             Toast.makeText(this, "Image file not found", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // Create dialog
         val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_image_preview, null)
         val ivFullImage = dialogView.findViewById<ImageView>(R.id.ivFullImage)
         val btnClose = dialogView.findViewById<Button>(R.id.btnClose)
 
-        // Load image
         val bitmap = BitmapFactory.decodeFile(photoPath)
         ivFullImage.setImageBitmap(bitmap)
 
-        // Build and show dialog
         val dialog = AlertDialog.Builder(this)
             .setView(dialogView)
             .create()

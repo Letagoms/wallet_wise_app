@@ -2,7 +2,7 @@ package com.example.wallet_wise_app.database
 
 import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
-import com.example.wallet_wise_app.models.Expense
+import com.example.wallet_wise_app.model.Expense
 
 // OBJECT means this is a Singleton - only ONE instance exists in the entire app
 // All functions here are like "static" methods - you call them directly without creating an instance

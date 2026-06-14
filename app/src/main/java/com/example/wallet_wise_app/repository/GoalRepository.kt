@@ -1,36 +1,25 @@
 // repositories/GoalRepository.kt
-package com.example.wallet_wise_app.repositories
+package com.example.wallet_wise_app.repository
 
 import android.content.Context
 import com.example.wallet_wise_app.database.DatabaseHelper
-import com.example.wallet_wise_app.database.GoalTable
-import com.example.wallet_wise_app.models.Goal
+import com.example.wallet_wise_app.model.Goal
 
 class GoalRepository(private val context: Context) {
 
-    private val dbHelper = DatabaseHelper(context)
+    // FIXED: Use getInstance() instead of constructor
+    private val dbHelper = DatabaseHelper.getInstance(context)
 
-    // Save a new goal to database
     fun save(goal: Goal): Goal {
-        val db = dbHelper.writableDatabase
-        val id = GoalTable.insert(db, goal)
-        db.close()
+        val id = dbHelper.insertGoal(goal)
         return goal.copy(goalId = id.toInt())
     }
 
-    // Get all goals from database
     fun getAllGoals(): List<Goal> {
-        val db = dbHelper.readableDatabase
-        val goals = GoalTable.getAll(db)
-        db.close()
-        return goals
+        return dbHelper.getAllGoals()
     }
 
-    // Get goals for a specific user
     fun getGoalsByUserId(userId: Int): List<Goal> {
-        val db = dbHelper.readableDatabase
-        val goals = GoalTable.getByUserId(db, userId)
-        db.close()
-        return goals
+        return dbHelper.getGoalsByUserId(userId)
     }
 }

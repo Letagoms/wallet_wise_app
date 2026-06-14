@@ -4,13 +4,10 @@ package com.example.wallet_wise_app.screens
 import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.core.view.GravityCompat
 import com.example.wallet_wise_app.R
 import com.example.wallet_wise_app.database.DatabaseHelper
 import com.example.wallet_wise_app.services.GoalService
@@ -31,6 +28,8 @@ class ViewGoalsActivity : AppCompatActivity() {
     private lateinit var navExpenseList: Button
     private lateinit var navViewGoals: Button
     private lateinit var navSetGoals: Button
+    private lateinit var navCreateCategory: Button
+    private lateinit var navViewCategories: Button
 
     private lateinit var goalService: GoalService
     private lateinit var dbHelper: DatabaseHelper
@@ -41,8 +40,9 @@ class ViewGoalsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_goals)
 
+        // FIXED: Use getInstance() instead of constructor
+        dbHelper = DatabaseHelper.getInstance(this)
         goalService = GoalService(this)
-        dbHelper = DatabaseHelper(this)
 
         tvCurrentSpending = findViewById(R.id.tvCurrentSpending)
         tvMinimumGoal = findViewById(R.id.tvMinimumGoal)
@@ -57,25 +57,35 @@ class ViewGoalsActivity : AppCompatActivity() {
         navExpenseList = findViewById(R.id.navExpenseList)
         navViewGoals = findViewById(R.id.navViewGoals)
         navSetGoals = findViewById(R.id.navSetGoals)
+        navCreateCategory = findViewById(R.id.navCreateCategory)
+        navViewCategories = findViewById(R.id.navViewCategories)
 
-        // Menu button opens drawer
         btnMenu.setOnClickListener {
-            drawerLayout.openDrawer(Gravity.START)
+            drawerLayout.openDrawer(GravityCompat.START)
         }
 
-        // Navigation buttons
         navExpenseList.setOnClickListener {
             startActivity(Intent(this, ExpenseListActivity::class.java))
-            drawerLayout.closeDrawer(Gravity.START)
+            drawerLayout.closeDrawer(GravityCompat.START)
         }
 
         navViewGoals.setOnClickListener {
-            drawerLayout.closeDrawer(Gravity.START)
+            drawerLayout.closeDrawer(GravityCompat.START)
         }
 
         navSetGoals.setOnClickListener {
             startActivity(Intent(this, SetGoalsActivity::class.java))
-            drawerLayout.closeDrawer(Gravity.START)
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+
+        navCreateCategory.setOnClickListener {
+            startActivity(Intent(this, CreateCategoryActivity::class.java))
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+
+        navViewCategories.setOnClickListener {
+            startActivity(Intent(this, ViewCategoriesActivity::class.java))
+            drawerLayout.closeDrawer(GravityCompat.START)
         }
 
         btnSetNewGoal.setOnClickListener {
@@ -115,7 +125,6 @@ class ViewGoalsActivity : AppCompatActivity() {
                         tvMinimumGoal.text = String.format(Locale.US, "R%d", minimum)
                         tvMaximumGoal.text = String.format(Locale.US, "R%d", maximum)
 
-                        // Calculate progress for minimum goal (0% if below, 100% if reached or exceeded)
                         var minProgress = 0
                         if (currentSpending >= minimum) {
                             minProgress = 100
@@ -124,19 +133,16 @@ class ViewGoalsActivity : AppCompatActivity() {
                         }
                         progressBarMinimum.progress = minProgress
 
-                        // Calculate progress for maximum goal (capped at 100%)
                         var maxProgress = (currentSpending / maximum * 100).toInt()
                         if (maxProgress > 100) maxProgress = 100
                         progressBarMaximum.progress = maxProgress
 
-                        // Progress text
                         tvProgressText.text = when {
                             currentSpending < minimum -> "📍 Need R${String.format("%.2f", minimum - currentSpending)} more to reach minimum goal"
                             currentSpending > maximum -> "⚠️ Exceeded maximum by R${String.format("%.2f", currentSpending - maximum)}"
                             else -> "🎯 Between minimum and maximum goals!"
                         }
 
-                        // Status message
                         val statusMessage = when {
                             currentSpending < minimum -> "⚠️ Below minimum goal! Spend R${String.format("%.2f", minimum - currentSpending)} more to reach R$minimum"
                             currentSpending > maximum -> "❌ Over maximum goal! You've exceeded by R${String.format("%.2f", currentSpending - maximum)}"

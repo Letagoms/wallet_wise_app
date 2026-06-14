@@ -47,6 +47,16 @@
             android:name=".screens.ViewGoalsActivity"
             android:exported="false" />
 
+        <!-- Create Category Activity -->
+        <activity
+            android:name=".screens.CreateCategoryActivity"
+            android:exported="false" />
+
+        <!-- View Categories Activity -->
+        <activity
+            android:name=".screens.ViewCategoriesActivity"
+            android:exported="false" />
+
         <!-- FileProvider for Camera Photos -->
         <provider
             android:name="androidx.core.content.FileProvider"
