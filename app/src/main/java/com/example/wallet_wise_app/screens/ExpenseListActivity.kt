@@ -1,117 +1,145 @@
 // screens/ExpenseListActivity.kt
-// This screen shows ALL saved expenses in a scrollable list
-// User can see what they've spent and tap "Add Expense" to create new ones
-// Called from CreateExpenseActivity when user clicks "View All Expenses"
-
 package com.example.wallet_wise_app.screens
 
+import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.ListView
-import android.widget.TextView
-import android.widget.Toast
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
 import com.example.wallet_wise_app.R
 import com.example.wallet_wise_app.database.DatabaseHelper
+import com.example.wallet_wise_app.models.Expense
+import java.io.File
 import java.util.Locale
 
 class ExpenseListActivity : AppCompatActivity() {
 
-    // ========== UI COMPONENTS ==========
-    private lateinit var lvExpenses: ListView      // Scrollable list that displays expenses
-    private lateinit var emptyText: TextView       // Shows "No expenses" message when list is empty
-    private lateinit var btnAddExpense: Button     // Button to go to Add Expense screen
-    private lateinit var dbHelper: DatabaseHelper  // Helper to read expenses from database
+    private lateinit var lvExpenses: ListView
+    private lateinit var emptyText: TextView
+    private lateinit var btnAddExpense: Button
+    private lateinit var btnMenu: ImageButton
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navExpenseList: Button
+    private lateinit var navViewGoals: Button
+    private lateinit var navSetGoals: Button
+    private lateinit var dbHelper: DatabaseHelper
 
-    // ========== ON CREATE - SCREEN STARTUP ==========
-    // Called ONCE when this screen is first created
+    private var expensesList: List<Expense> = emptyList()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_expense_list)  // Load the XML layout for this screen
+        setContentView(R.layout.activity_expense_list)
 
-        // Connect UI variables to actual XML views
         lvExpenses = findViewById(R.id.lvExpenses)
         emptyText = findViewById(R.id.emptyText)
         btnAddExpense = findViewById(R.id.btnGoToAddExpense)
-
-        // Initialize database helper
+        btnMenu = findViewById(R.id.btnMenu)
+        drawerLayout = findViewById(R.id.drawerLayout)
+        navExpenseList = findViewById(R.id.navExpenseList)
+        navViewGoals = findViewById(R.id.navViewGoals)
+        navSetGoals = findViewById(R.id.navSetGoals)
         dbHelper = DatabaseHelper(this)
 
-        // ========== ADD EXPENSE BUTTON ==========
-        // When clicked, navigate to the CreateExpenseActivity screen
+        btnMenu.setOnClickListener {
+            drawerLayout.openDrawer(Gravity.START)
+        }
+
+        navExpenseList.setOnClickListener {
+            drawerLayout.closeDrawer(Gravity.START)
+        }
+
+        navViewGoals.setOnClickListener {
+            startActivity(Intent(this, ViewGoalsActivity::class.java))
+            drawerLayout.closeDrawer(Gravity.START)
+        }
+
+        navSetGoals.setOnClickListener {
+            startActivity(Intent(this, SetGoalsActivity::class.java))
+            drawerLayout.closeDrawer(Gravity.START)
+        }
+
         btnAddExpense.setOnClickListener {
             startActivity(Intent(this, CreateExpenseActivity::class.java))
         }
 
-        // Load and display all expenses
         loadExpenses()
     }
 
-    // ========== ON RESUME ==========
-    // Called every time the screen becomes visible
-    // This includes:
-    //   - First time opening the screen
-    //   - Coming BACK from Add Expense screen (after saving a new expense)
-    // This ensures the list is ALWAYS up to date
     override fun onResume() {
         super.onResume()
-        loadExpenses()  // Refresh the list (shows newly added expenses)
+        loadExpenses()
     }
 
-    // ========== LOAD EXPENSES FROM DATABASE ==========
-    // Runs in background thread (Thread) so UI doesn't freeze while querying database
     private fun loadExpenses() {
-        // Thread { } runs code in background (not blocking UI)
         Thread {
-            // Get ALL expenses from database (returns List<Expense>)
-            val expenses = dbHelper.getAllExpenses()
+            expensesList = dbHelper.getAllExpenses()
 
-            // Switch back to UI thread to update the screen
-            // (Cannot update UI from background thread)
             runOnUiThread {
-                // ========== CASE 1: NO EXPENSES ==========
-                if (expenses.isEmpty()) {
-                    // Hide the list view
+                if (expensesList.isEmpty()) {
                     lvExpenses.visibility = android.view.View.GONE
-                    // Show the "empty" message
                     emptyText.visibility = android.view.View.VISIBLE
-                }
-                // ========== CASE 2: HAS EXPENSES ==========
-                else {
-                    // Show the list view
+                } else {
                     lvExpenses.visibility = android.view.View.VISIBLE
-                    // Hide the empty message
                     emptyText.visibility = android.view.View.GONE
 
-                    // Convert each Expense object into a displayable string
-                    // .map { } transforms each expense into a formatted string
-                    val expenseStrings = expenses.map { expense ->
-                        // Handle empty category (show "No category" instead of blank)
-                        val categoryText = if (expense.category.isBlank()) "No category" else expense.category
-
-                        // Build the display string with emojis for visual clarity
-                        // Line 1: Name and amount
-                        // Line 2: Category, Date, Time range
-                        // Line 3: Description
-                        "${expense.name} - R${String.format(Locale.US, "%.2f", expense.amount)}\n" +
-                                "📁 $categoryText | 📅 ${expense.date} | 🕐 ${expense.startTime} - ${expense.endTime}\n" +
-                                "📝 ${expense.description}"
+                    val expenseStrings = expensesList.map {
+                        val hasPhoto = if (it.photo.isNotBlank()) "📷" else ""
+                        "${hasPhoto} ${it.name} - R${String.format(Locale.US, "%.2f", it.amount)}\n" +
+                                "📁 ${it.category} | 📅 ${it.date} | 🕐 ${it.startTime} - ${it.endTime}\n" +
+                                "📝 ${it.description}"
                     }
 
-                    // ArrayAdapter is Android's built-in adapter to connect data to ListView
-                    // android.R.layout.simple_list_item_1 = default Android text layout
                     val adapter = ArrayAdapter(
-                        this,                           // Context (this screen)
-                        android.R.layout.simple_list_item_1,  // How each item looks (simple text)
-                        expenseStrings                  // The data to display
+                        this,
+                        android.R.layout.simple_list_item_1,
+                        expenseStrings
                     )
-
-                    // Attach the adapter to the ListView
                     lvExpenses.adapter = adapter
+
+                    // Handle item click to show image
+                    lvExpenses.setOnItemClickListener { _, _, position, _ ->
+                        val expense = expensesList[position]
+                        if (expense.photo.isNotBlank()) {
+                            showImagePreview(expense.photo, expense.name)
+                        } else {
+                            Toast.makeText(this, "No photo attached to this expense", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
             }
-        }.start()  // Start the background thread
+        }.start()
+    }
+
+    private fun showImagePreview(photoPath: String, expenseName: String) {
+        // Check if file exists
+        val imageFile = File(photoPath)
+        if (!imageFile.exists()) {
+            Toast.makeText(this, "Image file not found", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Create dialog
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_image_preview, null)
+        val ivFullImage = dialogView.findViewById<ImageView>(R.id.ivFullImage)
+        val btnClose = dialogView.findViewById<Button>(R.id.btnClose)
+
+        // Load image
+        val bitmap = BitmapFactory.decodeFile(photoPath)
+        ivFullImage.setImageBitmap(bitmap)
+
+        // Build and show dialog
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .create()
+
+        btnClose.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 }
