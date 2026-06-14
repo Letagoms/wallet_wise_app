@@ -22,15 +22,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Wallet_wise_app">
 
-        <!-- Set Goals Activity (Launcher / First Page) -->
+        <!-- Login Activity (Launcher / First Page) -->
         <activity
-            android:name=".screens.SetGoalsActivity"
+            android:name=".screens.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Register Activity -->
+        <activity
+            android:name=".screens.RegisterActivity"
+            android:exported="false" />
+
+        <!-- Set Goals Activity -->
+        <activity
+            android:name=".screens.SetGoalsActivity"
+            android:exported="false" />
 
         <!-- Create Expense Activity -->
         <activity

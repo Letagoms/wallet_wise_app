@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import com.example.wallet_wise_app.model.Expense
 import com.example.wallet_wise_app.model.Goal
 import com.example.wallet_wise_app.model.Category
+import com.example.wallet_wise_app.model.User
 
 class DatabaseHelper private constructor(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
@@ -28,12 +29,14 @@ class DatabaseHelper private constructor(context: Context) : SQLiteOpenHelper(co
         ExpenseTable.createTable(db)
         GoalTable.createTable(db)
         CategoryTable.createTable(db)
+        UserTable.createTable(db)  // ADD THIS
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         ExpenseTable.dropTable(db)
         GoalTable.dropTable(db)
         CategoryTable.dropTable(db)
+        UserTable.dropTable(db)    // ADD THIS
         onCreate(db)
     }
 
@@ -88,5 +91,31 @@ class DatabaseHelper private constructor(context: Context) : SQLiteOpenHelper(co
     fun deleteCategory(categoryId: Int): Boolean {
         val db = writableDatabase
         return CategoryTable.deleteById(db, categoryId)
+    }
+
+    // ========== USER METHODS ==========
+    fun insertUser(user: User): Long {
+        val db = writableDatabase
+        return UserTable.insert(db, user)
+    }
+
+    fun getUserByUsername(username: String): User? {
+        val db = readableDatabase
+        return UserTable.getUserByUsername(db, username)
+    }
+
+    fun getUserByEmail(email: String): User? {
+        val db = readableDatabase
+        return UserTable.getUserByEmail(db, email)
+    }
+
+    fun usernameExists(username: String): Boolean {
+        val db = readableDatabase
+        return UserTable.usernameExists(db, username)
+    }
+
+    fun emailExists(email: String): Boolean {
+        val db = readableDatabase
+        return UserTable.emailExists(db, email)
     }
 }
