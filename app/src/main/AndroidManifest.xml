@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.CAMERA" />
 
-    <!-- Add this for camera feature -->
+    <!-- Camera feature (not required, app works without it) -->
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
 
@@ -22,8 +22,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Wallet_wise_app">
 
+        <!-- Set Goals Activity (Launcher / First Page) -->
         <activity
-            android:name=".screens.CreateExpenseActivity"
+            android:name=".screens.SetGoalsActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,10 +32,22 @@
             </intent-filter>
         </activity>
 
+        <!-- Create Expense Activity -->
+        <activity
+            android:name=".screens.CreateExpenseActivity"
+            android:exported="false" />
+
+        <!-- Expense List Activity -->
         <activity
             android:name=".screens.ExpenseListActivity"
             android:exported="false" />
 
+        <!-- View Goals Activity -->
+        <activity
+            android:name=".screens.ViewGoalsActivity"
+            android:exported="false" />
+
+        <!-- FileProvider for Camera Photos -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
