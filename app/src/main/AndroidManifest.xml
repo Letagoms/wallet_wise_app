@@ -2,11 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Permissions - MUST be before <application> tag -->
+    <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- Add this for camera feature -->
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -18,7 +22,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Wallet_wise_app">
 
-        <!-- Create Expense Activity (Launcher / Main Screen) -->
         <activity
             android:name=".screens.CreateExpenseActivity"
             android:exported="true">
@@ -28,10 +31,19 @@
             </intent-filter>
         </activity>
 
-        <!-- Expense List Activity -->
         <activity
             android:name=".screens.ExpenseListActivity"
             android:exported="false" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
     </application>
 

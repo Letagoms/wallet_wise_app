@@ -5,6 +5,7 @@ data class Expense(
     val id: Int = 0,
     val name: String,
     val amount: Double,
+    val category: String,  // NEW
     val date: String,
     val startTime: String,
     val endTime: String,

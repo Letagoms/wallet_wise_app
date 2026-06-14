@@ -1,6 +1,7 @@
 // screens/CreateExpenseActivity.kt
 package com.example.wallet_wise_app.screens
 
+import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -10,24 +11,25 @@ import android.provider.MediaStore
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.wallet_wise_app.R
 import com.example.wallet_wise_app.services.ExpenseService
+import com.example.wallet_wise_app.utils.PhotoHelper
 import com.example.wallet_wise_app.utils.ReceiptScanner
-import java.io.File
-import java.io.FileOutputStream
-import java.util.UUID
+import java.text.SimpleDateFormat
+import java.util.*
 
 class CreateExpenseActivity : AppCompatActivity() {
 
     private lateinit var etName: EditText
     private lateinit var etAmount: EditText
+    private lateinit var etCategory: EditText
     private lateinit var etDate: EditText
     private lateinit var etStartTime: EditText
     private lateinit var etEndTime: EditText
     private lateinit var etDescription: EditText
     private lateinit var btnScanReceipt: Button
+    private lateinit var btnTakePhoto: Button
     private lateinit var btnSelectPhoto: Button
     private lateinit var ivPhoto: ImageView
     private lateinit var btnSubmit: Button
@@ -36,25 +38,50 @@ class CreateExpenseActivity : AppCompatActivity() {
     private var selectedPhotoPath: String = ""
     private var currentPhotoBitmap: Bitmap? = null
     private lateinit var expenseService: ExpenseService
+    private var photoFile: java.io.File? = null
 
-    companion object {
-        private const val CAMERA_PERMISSION_CODE = 100
+    // Camera permission launcher
+    private val cameraPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            launchCamera()
+        } else {
+            Toast.makeText(this, "Camera permission required", Toast.LENGTH_SHORT).show()
+        }
     }
 
-    private val photoPickerLauncher = registerForActivityResult(
+    // Camera launcher
+    private val cameraLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            photoFile?.let { file ->
+                if (file.exists()) {
+                    selectedPhotoPath = file.absolutePath
+                    currentPhotoBitmap = PhotoHelper.loadBitmapFromPath(selectedPhotoPath)
+                    ivPhoto.setImageBitmap(currentPhotoBitmap)
+                    ivPhoto.visibility = android.view.View.VISIBLE
+                    Toast.makeText(this, "Photo taken! Tap Scan Receipt", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    // Gallery launcher
+    private val galleryLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == RESULT_OK) {
             val data: Intent? = result.data
             val photoUri: Uri? = data?.data
             photoUri?.let {
-                selectedPhotoPath = savePhotoToStorage(it)
+                selectedPhotoPath = PhotoHelper.savePhotoToStorage(this, it) ?: ""
                 if (selectedPhotoPath.isNotEmpty()) {
-                    val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, it)
-                    currentPhotoBitmap = bitmap
-                    ivPhoto.setImageBitmap(bitmap)
+                    currentPhotoBitmap = PhotoHelper.loadBitmapFromUri(this, it)
+                    ivPhoto.setImageBitmap(currentPhotoBitmap)
                     ivPhoto.visibility = android.view.View.VISIBLE
-                    Toast.makeText(this, "Photo selected! Tap Scan to extract data", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Photo selected! Tap Scan Receipt", Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -68,26 +95,41 @@ class CreateExpenseActivity : AppCompatActivity() {
 
         etName = findViewById(R.id.etName)
         etAmount = findViewById(R.id.etAmount)
+        etCategory = findViewById(R.id.etCategory)
         etDate = findViewById(R.id.etDate)
         etStartTime = findViewById(R.id.etStartTime)
         etEndTime = findViewById(R.id.etEndTime)
         etDescription = findViewById(R.id.etDescription)
         btnScanReceipt = findViewById(R.id.btnScanReceipt)
+        btnTakePhoto = findViewById(R.id.btnTakePhoto)
         btnSelectPhoto = findViewById(R.id.btnSelectPhoto)
         ivPhoto = findViewById(R.id.ivPhoto)
         btnSubmit = findViewById(R.id.btnSubmit)
         btnViewExpenses = findViewById(R.id.btnViewExpenses)
 
+        // Set default date
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        etDate.setText(dateFormat.format(Date()))
+
         btnScanReceipt.setOnClickListener {
             if (currentPhotoBitmap != null) {
                 scanReceipt()
             } else {
-                Toast.makeText(this, "Please select a receipt photo first", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Take or select a photo first", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        btnTakePhoto.setOnClickListener {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                launchCamera()
+            } else {
+                cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
             }
         }
 
         btnSelectPhoto.setOnClickListener {
-            openPhotoPicker()
+            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            galleryLauncher.launch(intent)
         }
 
         btnSubmit.setOnClickListener {
@@ -99,9 +141,19 @@ class CreateExpenseActivity : AppCompatActivity() {
         }
     }
 
-    private fun openPhotoPicker() {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        photoPickerLauncher.launch(intent)
+    private fun launchCamera() {
+        photoFile = PhotoHelper.createPhotoFile(this)
+        photoFile?.let { file ->
+            val photoUri = PhotoHelper.getPhotoUri(this, file)
+            if (photoUri != null) {
+                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
+                    putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
+                }
+                cameraLauncher.launch(intent)
+            } else {
+                Toast.makeText(this, "Failed to create photo file", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun scanReceipt() {
@@ -121,36 +173,29 @@ class CreateExpenseActivity : AppCompatActivity() {
                         etName.setText(scannedData.name)
                     }
 
-                    val message = "Scanned: ${if (scannedData.amount.isNotEmpty()) "Amount: R${scannedData.amount} " else ""}" +
-                            "${if (scannedData.date.isNotEmpty()) "Date: ${scannedData.date} " else ""}"
+                    val message = buildString {
+                        if (scannedData.amount.isNotEmpty()) append("Amount: R${scannedData.amount} ")
+                        if (scannedData.date.isNotEmpty()) append("Date: ${scannedData.date} ")
+                        if (scannedData.name.isNotEmpty()) append("Store: ${scannedData.name}")
+                    }
 
-                    Toast.makeText(this, message.ifEmpty { "No data found. Please enter manually" }, Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        this,
+                        if (message.isBlank()) "No data found" else message,
+                        Toast.LENGTH_LONG
+                    ).show()
 
                     btnScanReceipt.isEnabled = true
-                    btnScanReceipt.text = "📷 Scan Receipt"
+                    btnScanReceipt.text = "Scan Receipt"
                 }
             }
-        }
-    }
-
-    private fun savePhotoToStorage(photoUri: Uri): String {
-        return try {
-            val inputStream = contentResolver.openInputStream(photoUri)
-            val fileName = "${UUID.randomUUID()}.jpg"
-            val photoFile = File(filesDir, fileName)
-            FileOutputStream(photoFile).use { outputStream ->
-                inputStream?.copyTo(outputStream)
-            }
-            inputStream?.close()
-            photoFile.absolutePath
-        } catch (e: Exception) {
-            ""
         }
     }
 
     private fun saveExpense() {
         val name = etName.text.toString()
         val amount = etAmount.text.toString().toDoubleOrNull() ?: 0.0
+        val category = etCategory.text.toString()
         val date = etDate.text.toString()
         val startTime = etStartTime.text.toString()
         val endTime = etEndTime.text.toString()
@@ -166,6 +211,11 @@ class CreateExpenseActivity : AppCompatActivity() {
             return
         }
 
+        if (date.isBlank()) {
+            Toast.makeText(this, "Date required", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         btnSubmit.isEnabled = false
         btnSubmit.text = "Saving..."
 
@@ -174,6 +224,7 @@ class CreateExpenseActivity : AppCompatActivity() {
                 val savedExpense = expenseService.addExpense(
                     name = name,
                     amount = amount,
+                    category = category,
                     date = date,
                     startTime = startTime,
                     endTime = endTime,
@@ -183,20 +234,7 @@ class CreateExpenseActivity : AppCompatActivity() {
 
                 runOnUiThread {
                     Toast.makeText(this, "Saved! ID: ${savedExpense.id}", Toast.LENGTH_LONG).show()
-
-                    etName.text.clear()
-                    etAmount.text.clear()
-                    etDate.text.clear()
-                    etStartTime.text.clear()
-                    etEndTime.text.clear()
-                    etDescription.text.clear()
-                    ivPhoto.setImageURI(null)
-                    ivPhoto.visibility = android.view.View.GONE
-                    selectedPhotoPath = ""
-                    currentPhotoBitmap = null
-
-                    btnSubmit.isEnabled = true
-                    btnSubmit.text = "Save Expense"
+                    finish()
                 }
             } catch (e: Exception) {
                 runOnUiThread {
