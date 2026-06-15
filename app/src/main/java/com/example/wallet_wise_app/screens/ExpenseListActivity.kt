@@ -13,8 +13,10 @@ import androidx.core.view.GravityCompat
 import com.example.wallet_wise_app.R
 import com.example.wallet_wise_app.database.DatabaseHelper
 import com.example.wallet_wise_app.model.Expense
+import com.example.wallet_wise_app.utils.DateRangePickerDialog
 import java.io.File
-import java.util.Locale
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ExpenseListActivity : AppCompatActivity() {
 
@@ -22,6 +24,9 @@ class ExpenseListActivity : AppCompatActivity() {
     private lateinit var emptyText: TextView
     private lateinit var btnAddExpense: Button
     private lateinit var btnMenu: ImageButton
+    private lateinit var btnCalendar: ImageButton
+    private lateinit var btnClearFilter: Button
+    private lateinit var tvDateRange: TextView
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navExpenseList: Button
     private lateinit var navViewGoals: Button
@@ -31,7 +36,12 @@ class ExpenseListActivity : AppCompatActivity() {
     private lateinit var navProjectionCalendar: Button
     private lateinit var dbHelper: DatabaseHelper
 
-    private var expensesList: List<Expense> = emptyList()
+    private var allExpenses: List<Expense> = emptyList()
+    private var filteredExpenses: List<Expense> = emptyList()
+    private var startDateFilter: String? = null
+    private var endDateFilter: String? = null
+
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +53,9 @@ class ExpenseListActivity : AppCompatActivity() {
         emptyText = findViewById(R.id.emptyText)
         btnAddExpense = findViewById(R.id.btnGoToAddExpense)
         btnMenu = findViewById(R.id.btnMenu)
+        btnCalendar = findViewById(R.id.btnCalendar)
+        btnClearFilter = findViewById(R.id.btnClearFilter)
+        tvDateRange = findViewById(R.id.tvDateRange)
         drawerLayout = findViewById(R.id.drawerLayout)
         navExpenseList = findViewById(R.id.navExpenseList)
         navViewGoals = findViewById(R.id.navViewGoals)
@@ -56,6 +69,14 @@ class ExpenseListActivity : AppCompatActivity() {
 
         btnAddExpense.setOnClickListener {
             startActivity(Intent(this, CreateExpenseActivity::class.java))
+        }
+
+        btnCalendar.setOnClickListener {
+            showDateRangePicker()
+        }
+
+        btnClearFilter.setOnClickListener {
+            clearFilter()
         }
     }
 
@@ -94,6 +115,67 @@ class ExpenseListActivity : AppCompatActivity() {
         }
     }
 
+    private fun showDateRangePicker() {
+        DateRangePickerDialog(this) { startDate, endDate ->
+            startDateFilter = startDate
+            endDateFilter = endDate
+            applyFilter()
+        }.show()
+    }
+
+    private fun applyFilter() {
+        if (startDateFilter != null && endDateFilter != null) {
+            filteredExpenses = allExpenses.filter { expense ->
+                expense.date >= startDateFilter!! && expense.date <= endDateFilter!!
+            }
+            tvDateRange.text = "Showing: ${startDateFilter} to ${endDateFilter}"
+            btnClearFilter.visibility = android.view.View.VISIBLE
+            displayExpenses(filteredExpenses)
+        }
+    }
+
+    private fun clearFilter() {
+        startDateFilter = null
+        endDateFilter = null
+        tvDateRange.text = "Showing all expenses"
+        btnClearFilter.visibility = android.view.View.GONE
+        displayExpenses(allExpenses)
+    }
+
+    private fun displayExpenses(expenses: List<Expense>) {
+        if (expenses.isEmpty()) {
+            lvExpenses.visibility = android.view.View.GONE
+            emptyText.visibility = android.view.View.VISIBLE
+            emptyText.text = if (startDateFilter != null) "No expenses found for selected dates" else "No expenses yet. Add your first expense!"
+        } else {
+            lvExpenses.visibility = android.view.View.VISIBLE
+            emptyText.visibility = android.view.View.GONE
+
+            val expenseStrings = expenses.map {
+                val hasPhoto = if (it.photo.isNotBlank()) "📷 " else ""
+                "$hasPhoto${it.name} - R${String.format(Locale.US, "%.2f", it.amount)}\n" +
+                        "📁 ${it.category} | 📅 ${it.date} | 🕐 ${it.startTime} - ${it.endTime}\n" +
+                        "📝 ${it.description}"
+            }
+
+            val adapter = ArrayAdapter(
+                this,
+                android.R.layout.simple_list_item_1,
+                expenseStrings
+            )
+            lvExpenses.adapter = adapter
+
+            lvExpenses.setOnItemClickListener { _, _, position, _ ->
+                val expense = expenses[position]
+                if (expense.photo.isNotBlank()) {
+                    showImagePreview(expense.photo, expense.name)
+                } else {
+                    Toast.makeText(this, "No photo attached to this expense", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         loadExpenses()
@@ -101,38 +183,13 @@ class ExpenseListActivity : AppCompatActivity() {
 
     private fun loadExpenses() {
         Thread {
-            expensesList = dbHelper.getAllExpenses()
+            allExpenses = dbHelper.getAllExpenses()
 
             runOnUiThread {
-                if (expensesList.isEmpty()) {
-                    lvExpenses.visibility = android.view.View.GONE
-                    emptyText.visibility = android.view.View.VISIBLE
+                if (startDateFilter != null && endDateFilter != null) {
+                    applyFilter()
                 } else {
-                    lvExpenses.visibility = android.view.View.VISIBLE
-                    emptyText.visibility = android.view.View.GONE
-
-                    val expenseStrings = expensesList.map {
-                        val hasPhoto = if (it.photo.isNotBlank()) "📷 " else ""
-                        "$hasPhoto${it.name} - R${String.format(Locale.US, "%.2f", it.amount)}\n" +
-                                "📁 ${it.category} | 📅 ${it.date} | 🕐 ${it.startTime} - ${it.endTime}\n" +
-                                "📝 ${it.description}"
-                    }
-
-                    val adapter = ArrayAdapter(
-                        this,
-                        android.R.layout.simple_list_item_1,
-                        expenseStrings
-                    )
-                    lvExpenses.adapter = adapter
-
-                    lvExpenses.setOnItemClickListener { _, _, position, _ ->
-                        val expense = expensesList[position]
-                        if (expense.photo.isNotBlank()) {
-                            showImagePreview(expense.photo, expense.name)
-                        } else {
-                            Toast.makeText(this, "No photo attached to this expense", Toast.LENGTH_SHORT).show()
-                        }
-                    }
+                    displayExpenses(allExpenses)
                 }
             }
         }.start()
