@@ -67,6 +67,11 @@
             android:name=".screens.ViewCategoriesActivity"
             android:exported="false" />
 
+        <!-- Projection Calendar Activity -->
+        <activity
+            android:name=".screens.ProjectionCalendarActivity"
+            android:exported="false" />
+
         <!-- FileProvider for Camera Photos -->
         <provider
             android:name="androidx.core.content.FileProvider"

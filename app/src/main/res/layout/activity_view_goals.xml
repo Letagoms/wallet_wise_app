@@ -257,6 +257,15 @@
             android:backgroundTint="#2196F3"
             android:textColor="#FFFFFF" />
 
+        <Button
+            android:id="@+id/navProjectionCalendar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Projection Calendar"
+            android:backgroundTint="#E91E63"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="8dp" />
+
     </LinearLayout>
 
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -8,12 +8,14 @@ import com.example.wallet_wise_app.model.Expense
 import com.example.wallet_wise_app.model.Goal
 import com.example.wallet_wise_app.model.Category
 import com.example.wallet_wise_app.model.User
+import com.example.wallet_wise_app.model.ProjectedExpense
+import com.example.wallet_wise_app.model.ProjectedIncome
 
 class DatabaseHelper private constructor(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
         private const val DATABASE_NAME = "wallet_wise.db"
-        private const val DATABASE_VERSION = 6
+        private const val DATABASE_VERSION = 7
 
         @Volatile
         private var INSTANCE: DatabaseHelper? = null
@@ -29,14 +31,18 @@ class DatabaseHelper private constructor(context: Context) : SQLiteOpenHelper(co
         ExpenseTable.createTable(db)
         GoalTable.createTable(db)
         CategoryTable.createTable(db)
-        UserTable.createTable(db)  // ADD THIS
+        UserTable.createTable(db)
+        ProjectedExpenseTable.createTable(db)
+        ProjectedIncomeTable.createTable(db)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         ExpenseTable.dropTable(db)
         GoalTable.dropTable(db)
         CategoryTable.dropTable(db)
-        UserTable.dropTable(db)    // ADD THIS
+        UserTable.dropTable(db)
+        ProjectedExpenseTable.dropTable(db)
+        ProjectedIncomeTable.dropTable(db)
         onCreate(db)
     }
 
@@ -117,5 +123,57 @@ class DatabaseHelper private constructor(context: Context) : SQLiteOpenHelper(co
     fun emailExists(email: String): Boolean {
         val db = readableDatabase
         return UserTable.emailExists(db, email)
+    }
+
+    // ========== PROJECTED EXPENSE METHODS ==========
+    fun insertProjectedExpense(expense: ProjectedExpense): Long {
+        val db = writableDatabase
+        return ProjectedExpenseTable.insert(db, expense)
+    }
+
+    fun getAllProjectedExpenses(): List<ProjectedExpense> {
+        val db = readableDatabase
+        return ProjectedExpenseTable.getAll(db)
+    }
+
+    fun getProjectedExpensesByUserId(userId: Int): List<ProjectedExpense> {
+        val db = readableDatabase
+        return ProjectedExpenseTable.getByUserId(db, userId)
+    }
+
+    fun getProjectedExpensesByMonth(userId: Int, year: Int, month: Int): List<ProjectedExpense> {
+        val db = readableDatabase
+        return ProjectedExpenseTable.getByMonth(db, userId, year, month)
+    }
+
+    fun deleteProjectedExpense(id: Int): Boolean {
+        val db = writableDatabase
+        return ProjectedExpenseTable.delete(db, id)
+    }
+
+    // ========== PROJECTED INCOME METHODS ==========
+    fun insertProjectedIncome(income: ProjectedIncome): Long {
+        val db = writableDatabase
+        return ProjectedIncomeTable.insert(db, income)
+    }
+
+    fun getAllProjectedIncomes(): List<ProjectedIncome> {
+        val db = readableDatabase
+        return ProjectedIncomeTable.getAll(db)
+    }
+
+    fun getProjectedIncomesByUserId(userId: Int): List<ProjectedIncome> {
+        val db = readableDatabase
+        return ProjectedIncomeTable.getByUserId(db, userId)
+    }
+
+    fun getProjectedIncomesByMonth(userId: Int, year: Int, month: Int): List<ProjectedIncome> {
+        val db = readableDatabase
+        return ProjectedIncomeTable.getByMonth(db, userId, year, month)
+    }
+
+    fun deleteProjectedIncome(id: Int): Boolean {
+        val db = writableDatabase
+        return ProjectedIncomeTable.delete(db, id)
     }
 }

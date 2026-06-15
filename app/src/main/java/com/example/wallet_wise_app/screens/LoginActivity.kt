@@ -64,8 +64,7 @@ class LoginActivity : AppCompatActivity() {
                     // Login successful
                     Toast.makeText(this, "Welcome ${user.username}!", Toast.LENGTH_LONG).show()
 
-                    // Save logged in user ID (you can use SharedPreferences)
-                    // For now, we'll just pass to next activity
+                    // Pass user ID to next activity
                     val intent = Intent(this, SetGoalsActivity::class.java)
                     intent.putExtra("USER_ID", user.id)
                     intent.putExtra("USERNAME", user.username)
