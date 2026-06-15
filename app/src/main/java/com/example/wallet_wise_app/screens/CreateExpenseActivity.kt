@@ -1,4 +1,4 @@
-// screens/CreateExpenseActivity.kt (only showing the changed parts)
+// screens/CreateExpenseActivity.kt
 package com.example.wallet_wise_app.screens
 
 import android.Manifest
@@ -45,6 +45,7 @@ class CreateExpenseActivity : AppCompatActivity() {
     private lateinit var navSetGoals: Button
     private lateinit var navCreateCategory: Button
     private lateinit var navViewCategories: Button
+    private lateinit var navProjectionCalendar: Button
 
     private var selectedPhotoPath: String = ""
     private var currentPhotoBitmap: Bitmap? = null
@@ -127,37 +128,10 @@ class CreateExpenseActivity : AppCompatActivity() {
         navSetGoals = findViewById(R.id.navSetGoals)
         navCreateCategory = findViewById(R.id.navCreateCategory)
         navViewCategories = findViewById(R.id.navViewCategories)
+        navProjectionCalendar = findViewById(R.id.navProjectionCalendar)
 
+        setupDrawer()
         setupCategorySpinner()
-
-        btnMenu.setOnClickListener {
-            drawerLayout.openDrawer(GravityCompat.START)
-        }
-
-        navExpenseList.setOnClickListener {
-            startActivity(Intent(this, ExpenseListActivity::class.java))
-            drawerLayout.closeDrawer(GravityCompat.START)
-        }
-
-        navViewGoals.setOnClickListener {
-            startActivity(Intent(this, ViewGoalsActivity::class.java))
-            drawerLayout.closeDrawer(GravityCompat.START)
-        }
-
-        navSetGoals.setOnClickListener {
-            startActivity(Intent(this, SetGoalsActivity::class.java))
-            drawerLayout.closeDrawer(GravityCompat.START)
-        }
-
-        navCreateCategory.setOnClickListener {
-            startActivity(Intent(this, CreateCategoryActivity::class.java))
-            drawerLayout.closeDrawer(GravityCompat.START)
-        }
-
-        navViewCategories.setOnClickListener {
-            startActivity(Intent(this, ViewCategoriesActivity::class.java))
-            drawerLayout.closeDrawer(GravityCompat.START)
-        }
 
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         etDate.setText(dateFormat.format(Date()))
@@ -188,12 +162,45 @@ class CreateExpenseActivity : AppCompatActivity() {
         }
     }
 
-    // In CreateExpenseActivity.kt, update setupCategorySpinner() method:
+    private fun setupDrawer() {
+        btnMenu.setOnClickListener {
+            drawerLayout.openDrawer(GravityCompat.START)
+        }
+
+        navExpenseList.setOnClickListener {
+            startActivity(Intent(this, ExpenseListActivity::class.java))
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+
+        navViewGoals.setOnClickListener {
+            startActivity(Intent(this, ViewGoalsActivity::class.java))
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+
+        navSetGoals.setOnClickListener {
+            startActivity(Intent(this, SetGoalsActivity::class.java))
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+
+        navCreateCategory.setOnClickListener {
+            startActivity(Intent(this, CreateCategoryActivity::class.java))
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+
+        navViewCategories.setOnClickListener {
+            startActivity(Intent(this, ViewCategoriesActivity::class.java))
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+
+        navProjectionCalendar.setOnClickListener {
+            startActivity(Intent(this, ProjectionCalendarActivity::class.java))
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+    }
 
     private fun setupCategorySpinner() {
         Thread {
             try {
-                // Get combined categories (predefined + user-created)
                 val categories = categoryService.getAllCategoriesCombined(currentUserId)
                 categoryList = categories.map { it.categoryName }.distinct()
 

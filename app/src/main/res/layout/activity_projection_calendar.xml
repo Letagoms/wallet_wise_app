@@ -6,14 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Main Content -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="#FFFFFF">
 
-        <!-- Top Bar with Menu Button -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,7 +37,6 @@
 
         </LinearLayout>
 
-        <!-- Calendar Header -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -73,7 +70,6 @@
 
         </LinearLayout>
 
-        <!-- Projected Balance Card -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -125,7 +121,6 @@
 
         </androidx.cardview.widget.CardView>
 
-        <!-- Summary Row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -190,13 +185,11 @@
 
         </LinearLayout>
 
-        <!-- Divider -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#E5E5E5" />
 
-        <!-- Scheduled Expenses Header -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -221,7 +214,6 @@
 
         </LinearLayout>
 
-        <!-- Transactions List -->
         <ListView
             android:id="@+id/lvTransactions"
             android:layout_width="match_parent"
@@ -231,7 +223,6 @@
             android:dividerHeight="1dp"
             android:padding="8dp" />
 
-        <!-- Add Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -261,7 +252,7 @@
 
     </LinearLayout>
 
-    <!-- Navigation Drawer (Side Menu) -->
+    <!-- Navigation Drawer -->
     <LinearLayout
         android:id="@+id/navView"
         android:layout_width="280dp"

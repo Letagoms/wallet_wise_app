@@ -28,6 +28,7 @@ class ExpenseListActivity : AppCompatActivity() {
     private lateinit var navSetGoals: Button
     private lateinit var navCreateCategory: Button
     private lateinit var navViewCategories: Button
+    private lateinit var navProjectionCalendar: Button
     private lateinit var dbHelper: DatabaseHelper
 
     private var expensesList: List<Expense> = emptyList()
@@ -48,7 +49,17 @@ class ExpenseListActivity : AppCompatActivity() {
         navSetGoals = findViewById(R.id.navSetGoals)
         navCreateCategory = findViewById(R.id.navCreateCategory)
         navViewCategories = findViewById(R.id.navViewCategories)
+        navProjectionCalendar = findViewById(R.id.navProjectionCalendar)
 
+        setupDrawer()
+        loadExpenses()
+
+        btnAddExpense.setOnClickListener {
+            startActivity(Intent(this, CreateExpenseActivity::class.java))
+        }
+    }
+
+    private fun setupDrawer() {
         btnMenu.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
         }
@@ -77,11 +88,10 @@ class ExpenseListActivity : AppCompatActivity() {
             drawerLayout.closeDrawer(GravityCompat.START)
         }
 
-        btnAddExpense.setOnClickListener {
-            startActivity(Intent(this, CreateExpenseActivity::class.java))
+        navProjectionCalendar.setOnClickListener {
+            startActivity(Intent(this, ProjectionCalendarActivity::class.java))
+            drawerLayout.closeDrawer(GravityCompat.START)
         }
-
-        loadExpenses()
     }
 
     override fun onResume() {

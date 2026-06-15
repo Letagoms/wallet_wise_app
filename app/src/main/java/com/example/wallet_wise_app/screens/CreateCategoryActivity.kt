@@ -22,9 +22,9 @@ class CreateCategoryActivity : AppCompatActivity() {
     private lateinit var navSetGoals: Button
     private lateinit var navCreateCategory: Button
     private lateinit var navViewCategories: Button
+    private lateinit var navProjectionCalendar: Button
     private lateinit var categoryService: CategoryService
 
-    // For now, using fixed user ID
     private val currentUserId = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +33,6 @@ class CreateCategoryActivity : AppCompatActivity() {
 
         categoryService = CategoryService(this)
 
-        // Initialize views
         etCategoryName = findViewById(R.id.etCategoryName)
         btnCreateCategory = findViewById(R.id.btnCreateCategory)
         btnViewCategories = findViewById(R.id.btnViewCategories)
@@ -44,8 +43,20 @@ class CreateCategoryActivity : AppCompatActivity() {
         navSetGoals = findViewById(R.id.navSetGoals)
         navCreateCategory = findViewById(R.id.navCreateCategory)
         navViewCategories = findViewById(R.id.navViewCategories)
+        navProjectionCalendar = findViewById(R.id.navProjectionCalendar)
 
-        // Setup navigation drawer
+        setupDrawer()
+
+        btnCreateCategory.setOnClickListener {
+            createCategory()
+        }
+
+        btnViewCategories.setOnClickListener {
+            startActivity(Intent(this, ViewCategoriesActivity::class.java))
+        }
+    }
+
+    private fun setupDrawer() {
         btnMenu.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
         }
@@ -67,7 +78,6 @@ class CreateCategoryActivity : AppCompatActivity() {
 
         navCreateCategory.setOnClickListener {
             drawerLayout.closeDrawer(GravityCompat.START)
-            // Already on Create Category screen
         }
 
         navViewCategories.setOnClickListener {
@@ -75,27 +85,20 @@ class CreateCategoryActivity : AppCompatActivity() {
             drawerLayout.closeDrawer(GravityCompat.START)
         }
 
-        // Create Category button
-        btnCreateCategory.setOnClickListener {
-            createCategory()
-        }
-
-        // View Categories button
-        btnViewCategories.setOnClickListener {
-            startActivity(Intent(this, ViewCategoriesActivity::class.java))
+        navProjectionCalendar.setOnClickListener {
+            startActivity(Intent(this, ProjectionCalendarActivity::class.java))
+            drawerLayout.closeDrawer(GravityCompat.START)
         }
     }
 
     private fun createCategory() {
         val categoryName = etCategoryName.text.toString().trim()
 
-        // Validation
         if (categoryName.isEmpty()) {
             Toast.makeText(this, "Please enter a category name", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // Disable button while saving
         btnCreateCategory.isEnabled = false
         btnCreateCategory.text = "Creating..."
 

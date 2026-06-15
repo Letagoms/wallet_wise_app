@@ -13,7 +13,6 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Menu Button (Hamburger Icon) -->
         <ImageButton
             android:id="@+id/btnMenu"
             android:layout_width="40dp"
@@ -55,10 +54,10 @@
 
     </LinearLayout>
 
-    <!-- Navigation Drawer (Side Menu) -->
+    <!-- Navigation Drawer -->
     <LinearLayout
         android:id="@+id/navView"
-        android:layout_width="250dp"
+        android:layout_width="280dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:orientation="vertical"
@@ -98,7 +97,8 @@
             android:layout_height="wrap_content"
             android:text="Set Goals"
             android:backgroundTint="#FF9800"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="8dp" />
 
         <Button
             android:id="@+id/navCreateCategory"
@@ -115,7 +115,17 @@
             android:layout_height="wrap_content"
             android:text="View Categories"
             android:backgroundTint="#2196F3"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/navProjectionCalendar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Projection Calendar"
+            android:backgroundTint="#E91E63"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="8dp" />
 
     </LinearLayout>
 

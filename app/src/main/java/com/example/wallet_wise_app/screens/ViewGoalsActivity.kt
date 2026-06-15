@@ -3,7 +3,6 @@ package com.example.wallet_wise_app.screens
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.Gravity
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
@@ -30,6 +29,7 @@ class ViewGoalsActivity : AppCompatActivity() {
     private lateinit var navSetGoals: Button
     private lateinit var navCreateCategory: Button
     private lateinit var navViewCategories: Button
+    private lateinit var navProjectionCalendar: Button
 
     private lateinit var goalService: GoalService
     private lateinit var dbHelper: DatabaseHelper
@@ -40,7 +40,6 @@ class ViewGoalsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_goals)
 
-        // FIXED: Use getInstance() instead of constructor
         dbHelper = DatabaseHelper.getInstance(this)
         goalService = GoalService(this)
 
@@ -59,7 +58,18 @@ class ViewGoalsActivity : AppCompatActivity() {
         navSetGoals = findViewById(R.id.navSetGoals)
         navCreateCategory = findViewById(R.id.navCreateCategory)
         navViewCategories = findViewById(R.id.navViewCategories)
+        navProjectionCalendar = findViewById(R.id.navProjectionCalendar)
 
+        setupDrawer()
+
+        btnSetNewGoal.setOnClickListener {
+            startActivity(Intent(this, SetGoalsActivity::class.java))
+        }
+
+        loadGoalsAndProgress()
+    }
+
+    private fun setupDrawer() {
         btnMenu.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
         }
@@ -88,11 +98,10 @@ class ViewGoalsActivity : AppCompatActivity() {
             drawerLayout.closeDrawer(GravityCompat.START)
         }
 
-        btnSetNewGoal.setOnClickListener {
-            startActivity(Intent(this, SetGoalsActivity::class.java))
+        navProjectionCalendar.setOnClickListener {
+            startActivity(Intent(this, ProjectionCalendarActivity::class.java))
+            drawerLayout.closeDrawer(GravityCompat.START)
         }
-
-        loadGoalsAndProgress()
     }
 
     override fun onResume() {

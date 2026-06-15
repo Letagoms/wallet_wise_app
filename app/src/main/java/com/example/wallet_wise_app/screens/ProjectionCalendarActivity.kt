@@ -31,7 +31,6 @@ class ProjectionCalendarActivity : AppCompatActivity() {
     private lateinit var lvTransactions: ListView
     private lateinit var tvTransactionCount: TextView
 
-    // Navigation buttons
     private lateinit var navExpenseList: Button
     private lateinit var navViewGoals: Button
     private lateinit var navSetGoals: Button
@@ -49,7 +48,6 @@ class ProjectionCalendarActivity : AppCompatActivity() {
 
         dbHelper = DatabaseHelper.getInstance(this)
 
-        // Get user ID from intent
         currentUserId = intent.getIntExtra("USER_ID", 1)
 
         initViews()
@@ -81,7 +79,6 @@ class ProjectionCalendarActivity : AppCompatActivity() {
         lvTransactions = findViewById(R.id.lvTransactions)
         tvTransactionCount = findViewById(R.id.tvTransactionCount)
 
-        // Navigation buttons
         navExpenseList = findViewById(R.id.navExpenseList)
         navViewGoals = findViewById(R.id.navViewGoals)
         navSetGoals = findViewById(R.id.navSetGoals)
@@ -91,12 +88,10 @@ class ProjectionCalendarActivity : AppCompatActivity() {
     }
 
     private fun setupDrawer() {
-        // Open drawer when menu button clicked
         btnMenu.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
         }
 
-        // Navigation button click listeners
         navExpenseList.setOnClickListener {
             startActivity(Intent(this, ExpenseListActivity::class.java))
             drawerLayout.closeDrawer(GravityCompat.START)
@@ -123,7 +118,6 @@ class ProjectionCalendarActivity : AppCompatActivity() {
         }
 
         navProjectionCalendar.setOnClickListener {
-            // Already on Projection Calendar, just close drawer
             drawerLayout.closeDrawer(GravityCompat.START)
         }
     }
@@ -162,7 +156,6 @@ class ProjectionCalendarActivity : AppCompatActivity() {
             val projectedBalance = totalIncome - totalExpenses
             val expectedSavings = projectedBalance
 
-            // Combine and sort transactions by date
             val transactions = mutableListOf<Pair<String, String>>()
             expenses.forEach {
                 transactions.add(Pair("EXPENSE", "${it.date} - ${it.name}: -R${String.format("%.2f", it.amount)}"))
@@ -192,7 +185,6 @@ class ProjectionCalendarActivity : AppCompatActivity() {
         val etAmount = dialogView.findViewById<EditText>(R.id.etAmount)
         val etDate = dialogView.findViewById<EditText>(R.id.etDate)
 
-        // Set default date to selected month
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val defaultDate = dateFormat.format(currentCalendar.time)
         etDate.setText(defaultDate)

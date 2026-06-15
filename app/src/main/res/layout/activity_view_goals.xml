@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Main Content -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -14,7 +13,6 @@
         android:padding="24dp"
         android:background="#FFFFFF">
 
-        <!-- Menu Button (Hamburger Icon) -->
         <ImageButton
             android:id="@+id/btnMenu"
             android:layout_width="40dp"
@@ -49,7 +47,6 @@
             android:textColor="#2136F3"
             android:layout_marginBottom="24dp" />
 
-        <!-- Goal Card -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -71,7 +68,6 @@
                     android:textStyle="bold"
                     android:layout_marginBottom="16dp" />
 
-                <!-- Minimum Goal Row -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -97,7 +93,6 @@
 
                 </LinearLayout>
 
-                <!-- Progress Bar for Minimum -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -115,7 +110,6 @@
                     android:progressTint="#F44336"
                     android:layout_marginBottom="16dp" />
 
-                <!-- Maximum Goal Row -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -141,7 +135,6 @@
 
                 </LinearLayout>
 
-                <!-- Progress Bar for Maximum -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -158,7 +151,6 @@
                     android:layout_height="16dp"
                     android:progressTint="#4CAF50" />
 
-                <!-- Progress Text -->
                 <TextView
                     android:id="@+id/tvProgressText"
                     android:layout_width="wrap_content"
@@ -172,7 +164,6 @@
 
         </androidx.cardview.widget.CardView>
 
-        <!-- Status Message -->
         <TextView
             android:id="@+id/tvStatusMessage"
             android:layout_width="match_parent"
@@ -184,7 +175,6 @@
             android:background="#F5F5F5"
             android:layout_marginBottom="24dp" />
 
-        <!-- Set New Goal Button -->
         <Button
             android:id="@+id/btnSetNewGoal"
             android:layout_width="match_parent"
@@ -195,10 +185,10 @@
 
     </LinearLayout>
 
-    <!-- Navigation Drawer (Side Menu) -->
+    <!-- Navigation Drawer -->
     <LinearLayout
         android:id="@+id/navView"
-        android:layout_width="250dp"
+        android:layout_width="280dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:orientation="vertical"
@@ -238,7 +228,8 @@
             android:layout_height="wrap_content"
             android:text="Set Goals"
             android:backgroundTint="#FF9800"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="8dp" />
 
         <Button
             android:id="@+id/navCreateCategory"
@@ -255,7 +246,8 @@
             android:layout_height="wrap_content"
             android:text="View Categories"
             android:backgroundTint="#2196F3"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="8dp" />
 
         <Button
             android:id="@+id/navProjectionCalendar"

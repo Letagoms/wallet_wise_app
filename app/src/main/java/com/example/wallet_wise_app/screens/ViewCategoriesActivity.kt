@@ -24,6 +24,7 @@ class ViewCategoriesActivity : AppCompatActivity() {
     private lateinit var navSetGoals: Button
     private lateinit var navCreateCategory: Button
     private lateinit var navViewCategories: Button
+    private lateinit var navProjectionCalendar: Button
     private lateinit var categoryService: CategoryService
     private lateinit var dbHelper: DatabaseHelper
 
@@ -46,7 +47,18 @@ class ViewCategoriesActivity : AppCompatActivity() {
         navSetGoals = findViewById(R.id.navSetGoals)
         navCreateCategory = findViewById(R.id.navCreateCategory)
         navViewCategories = findViewById(R.id.navViewCategories)
+        navProjectionCalendar = findViewById(R.id.navProjectionCalendar)
 
+        setupDrawer()
+
+        btnCreateCategory.setOnClickListener {
+            startActivity(Intent(this, CreateCategoryActivity::class.java))
+        }
+
+        loadCategories()
+    }
+
+    private fun setupDrawer() {
         btnMenu.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
         }
@@ -75,11 +87,10 @@ class ViewCategoriesActivity : AppCompatActivity() {
             drawerLayout.closeDrawer(GravityCompat.START)
         }
 
-        btnCreateCategory.setOnClickListener {
-            startActivity(Intent(this, CreateCategoryActivity::class.java))
+        navProjectionCalendar.setOnClickListener {
+            startActivity(Intent(this, ProjectionCalendarActivity::class.java))
+            drawerLayout.closeDrawer(GravityCompat.START)
         }
-
-        loadCategories()
     }
 
     override fun onResume() {
