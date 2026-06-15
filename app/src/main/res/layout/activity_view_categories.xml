@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.drawerlayout.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -9,10 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="24dp"
+        android:padding="16dp"
         android:background="#FFFFFF">
 
-        <!-- Top Bar with Menu and Calendar Icons -->
+        <!-- Top Bar -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -69,16 +70,94 @@
             android:layout_marginBottom="8dp"
             android:layout_gravity="center" />
 
-        <!-- Total Spent During Period -->
+        <!-- Total Spent -->
         <TextView
             android:id="@+id/tvTotalSpent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Total: R0.00"
+            android:text="Total Spent: R0.00"
             android:textSize="16sp"
             android:textStyle="bold"
             android:gravity="center"
             android:layout_marginBottom="16dp" />
+
+        <!-- Chart Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Spending Trends"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Custom Bar Chart -->
+                <com.example.wallet_wise_app.utils.CustomBarChart
+                    android:id="@+id/customBarChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp" />
+
+                <!-- Min/Max Goal Info -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:padding="8dp"
+                    android:background="#F5F5F5">
+
+                    <View
+                        android:layout_width="16dp"
+                        android:layout_height="4dp"
+                        android:background="#F44336"
+                        android:layout_marginEnd="4dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Min Goal"
+                        android:textSize="11sp"
+                        android:layout_marginEnd="16dp" />
+
+                    <View
+                        android:layout_width="16dp"
+                        android:layout_height="4dp"
+                        android:background="#4CAF50"
+                        android:layout_marginEnd="4dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Max Goal"
+                        android:textSize="11sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Categories List Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Category Details"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
 
         <TextView
             android:id="@+id/emptyText"
@@ -111,7 +190,7 @@
 
     </LinearLayout>
 
-    <!-- Navigation Drawer (same as before) -->
+    <!-- Navigation Drawer -->
     <LinearLayout
         android:id="@+id/navView"
         android:layout_width="280dp"
@@ -190,8 +269,7 @@
             android:layout_height="wrap_content"
             android:text="Achievements"
             android:backgroundTint="#FF5722"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="8dp" />
+            android:textColor="#FFFFFF" />
 
     </LinearLayout>
 

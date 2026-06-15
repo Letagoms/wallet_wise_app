@@ -11,9 +11,10 @@ import com.example.wallet_wise_app.R
 import com.example.wallet_wise_app.database.DatabaseHelper
 import com.example.wallet_wise_app.model.Expense
 import com.example.wallet_wise_app.services.CategoryService
+import com.example.wallet_wise_app.utils.CustomBarChart
 import com.example.wallet_wise_app.utils.DateRangePickerDialog
+import java.text.SimpleDateFormat
 import java.util.*
-import java.text.SimpleDateFormat  // ← ADD THIS IMPORT
 
 class ViewCategoriesActivity : AppCompatActivity() {
 
@@ -26,6 +27,7 @@ class ViewCategoriesActivity : AppCompatActivity() {
     private lateinit var btnMenu: ImageButton
     private lateinit var btnCalendar: ImageButton
     private lateinit var drawerLayout: DrawerLayout
+    private lateinit var customBarChart: CustomBarChart
     private lateinit var navExpenseList: Button
     private lateinit var navViewGoals: Button
     private lateinit var navSetGoals: Button
@@ -40,6 +42,8 @@ class ViewCategoriesActivity : AppCompatActivity() {
     private var startDateFilter: String? = null
     private var endDateFilter: String? = null
     private var allExpenses: List<Expense> = emptyList()
+    private var minGoal: Float = 0f
+    private var maxGoal: Float = 0f
 
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
@@ -50,6 +54,8 @@ class ViewCategoriesActivity : AppCompatActivity() {
         categoryService = CategoryService(this)
         dbHelper = DatabaseHelper.getInstance(this)
 
+        loadGoals()
+
         lvCategories = findViewById(R.id.lvCategories)
         emptyText = findViewById(R.id.emptyText)
         tvDateRange = findViewById(R.id.tvDateRange)
@@ -59,6 +65,7 @@ class ViewCategoriesActivity : AppCompatActivity() {
         btnMenu = findViewById(R.id.btnMenu)
         btnCalendar = findViewById(R.id.btnCalendar)
         drawerLayout = findViewById(R.id.drawerLayout)
+        customBarChart = findViewById(R.id.customBarChart)
         navExpenseList = findViewById(R.id.navExpenseList)
         navViewGoals = findViewById(R.id.navViewGoals)
         navSetGoals = findViewById(R.id.navSetGoals)
@@ -82,6 +89,16 @@ class ViewCategoriesActivity : AppCompatActivity() {
         }
 
         loadData()
+    }
+
+    private fun loadGoals() {
+        Thread {
+            val goals = dbHelper.getGoalsByUserId(currentUserId)
+            if (goals.isNotEmpty()) {
+                minGoal = goals.first().minimumGoal.toFloat()
+                maxGoal = goals.first().maximumGoal.toFloat()
+            }
+        }.start()
     }
 
     private fun setupDrawer() {
@@ -140,6 +157,7 @@ class ViewCategoriesActivity : AppCompatActivity() {
             tvDateRange.text = "Showing: ${startDateFilter} to ${endDateFilter}"
             btnClearFilter.visibility = android.view.View.VISIBLE
             displayCategories(filteredExpenses)
+            updateBarChart(filteredExpenses)
         }
     }
 
@@ -149,11 +167,13 @@ class ViewCategoriesActivity : AppCompatActivity() {
         tvDateRange.text = "Showing all time"
         btnClearFilter.visibility = android.view.View.GONE
         displayCategories(allExpenses)
+        updateBarChart(allExpenses)
     }
 
     override fun onResume() {
         super.onResume()
         loadData()
+        loadGoals()
     }
 
     private fun loadData() {
@@ -166,8 +186,39 @@ class ViewCategoriesActivity : AppCompatActivity() {
                         expense.date >= startDateFilter!! && expense.date <= endDateFilter!!
                     }
                     displayCategories(filteredExpenses)
+                    updateBarChart(filteredExpenses)
                 } else {
                     displayCategories(allExpenses)
+                    updateBarChart(allExpenses)
+                }
+            }
+        }.start()
+    }
+
+    private fun updateBarChart(expenses: List<Expense>) {
+        Thread {
+            val categories = categoryService.getCategoriesByUserId(currentUserId)
+            val predefinedCategories = categoryService.getPredefinedCategories()
+            val allCategories = (predefinedCategories + categories).distinctBy { it.categoryName }
+
+            val categoryNames = mutableListOf<String>()
+            val categoryAmounts = mutableListOf<Float>()
+
+            for (category in allCategories) {
+                val totalSpent = expenses
+                    .filter { it.category.equals(category.categoryName, ignoreCase = true) }
+                    .sumOf { it.amount }
+                if (totalSpent > 0) {
+                    categoryNames.add(category.categoryName)
+                    categoryAmounts.add(totalSpent.toFloat())
+                }
+            }
+
+            runOnUiThread {
+                if (categoryNames.isNotEmpty()) {
+                    customBarChart.setData(categoryNames, categoryAmounts, minGoal, maxGoal)
+                } else {
+                    customBarChart.setData(emptyList(), emptyList(), minGoal, maxGoal)
                 }
             }
         }.start()
