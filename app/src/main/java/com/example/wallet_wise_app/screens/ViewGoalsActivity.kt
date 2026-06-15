@@ -30,6 +30,7 @@ class ViewGoalsActivity : AppCompatActivity() {
     private lateinit var navCreateCategory: Button
     private lateinit var navViewCategories: Button
     private lateinit var navProjectionCalendar: Button
+    private lateinit var navGamification: Button
 
     private lateinit var goalService: GoalService
     private lateinit var dbHelper: DatabaseHelper
@@ -59,6 +60,7 @@ class ViewGoalsActivity : AppCompatActivity() {
         navCreateCategory = findViewById(R.id.navCreateCategory)
         navViewCategories = findViewById(R.id.navViewCategories)
         navProjectionCalendar = findViewById(R.id.navProjectionCalendar)
+        navGamification = findViewById(R.id.navGamification)
 
         setupDrawer()
 
@@ -100,6 +102,11 @@ class ViewGoalsActivity : AppCompatActivity() {
 
         navProjectionCalendar.setOnClickListener {
             startActivity(Intent(this, ProjectionCalendarActivity::class.java))
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+
+        navGamification.setOnClickListener {
+            startActivity(Intent(this, GamificationActivity::class.java))
             drawerLayout.closeDrawer(GravityCompat.START)
         }
     }

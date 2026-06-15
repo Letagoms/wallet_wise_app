@@ -10,12 +10,14 @@ import com.example.wallet_wise_app.model.Category
 import com.example.wallet_wise_app.model.User
 import com.example.wallet_wise_app.model.ProjectedExpense
 import com.example.wallet_wise_app.model.ProjectedIncome
+import com.example.wallet_wise_app.model.Achievement
+import com.example.wallet_wise_app.model.UserStats
 
 class DatabaseHelper private constructor(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
         private const val DATABASE_NAME = "wallet_wise.db"
-        private const val DATABASE_VERSION = 7
+        private const val DATABASE_VERSION = 8
 
         @Volatile
         private var INSTANCE: DatabaseHelper? = null
@@ -34,6 +36,8 @@ class DatabaseHelper private constructor(context: Context) : SQLiteOpenHelper(co
         UserTable.createTable(db)
         ProjectedExpenseTable.createTable(db)
         ProjectedIncomeTable.createTable(db)
+        AchievementTable.createTable(db)
+        UserStatsTable.createTable(db)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -43,6 +47,8 @@ class DatabaseHelper private constructor(context: Context) : SQLiteOpenHelper(co
         UserTable.dropTable(db)
         ProjectedExpenseTable.dropTable(db)
         ProjectedIncomeTable.dropTable(db)
+        AchievementTable.dropTable(db)
+        UserStatsTable.dropTable(db)
         onCreate(db)
     }
 
@@ -175,5 +181,56 @@ class DatabaseHelper private constructor(context: Context) : SQLiteOpenHelper(co
     fun deleteProjectedIncome(id: Int): Boolean {
         val db = writableDatabase
         return ProjectedIncomeTable.delete(db, id)
+    }
+
+    // ========== ACHIEVEMENT METHODS ==========
+    fun insertAchievement(achievement: Achievement): Long {
+        val db = writableDatabase
+        return AchievementTable.insert(db, achievement)
+    }
+
+    fun getAchievementsByUserId(userId: Int): List<Achievement> {
+        val db = readableDatabase
+        return AchievementTable.getAllByUserId(db, userId)
+    }
+
+    fun updateAchievementUnlocked(achievementId: Int, unlockedAt: String) {
+        val db = writableDatabase
+        AchievementTable.updateUnlocked(db, achievementId, unlockedAt)
+    }
+
+    fun getAchievementByRequirement(userId: Int, requirement: String): Achievement? {
+        val db = readableDatabase
+        return AchievementTable.getByRequirement(db, userId, requirement)
+    }
+
+    // ========== USER STATS METHODS ==========
+    fun getUserStats(userId: Int): UserStats? {
+        val db = readableDatabase
+        return UserStatsTable.getByUserId(db, userId)
+    }
+
+    fun updateUserStats(stats: UserStats) {
+        val db = writableDatabase
+        UserStatsTable.updateLoginCount(db, stats.userId, stats.loginCount, stats.lastLoginDate ?: "")
+    }
+
+    fun updateUserExpenseCount(userId: Int, count: Int) {
+        val db = writableDatabase
+        UserStatsTable.updateExpenseCount(db, userId, count)
+    }
+
+    fun updateUserGoalCount(userId: Int, count: Int) {
+        val db = writableDatabase
+        UserStatsTable.updateGoalCount(db, userId, count)
+    }
+
+    fun createOrUpdateUserStats(stats: UserStats) {
+        val db = writableDatabase
+        if (getUserStats(stats.userId) == null) {
+            UserStatsTable.insert(db, stats)
+        } else {
+            UserStatsTable.updateLoginCount(db, stats.userId, stats.loginCount, stats.lastLoginDate ?: "")
+        }
     }
 }

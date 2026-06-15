@@ -1,4 +1,4 @@
-// screens/CreateCategoryActivity.kt
+// screens/GamificationActivity.kt
 package com.example.wallet_wise_app.screens
 
 import android.content.Intent
@@ -8,15 +8,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.core.view.GravityCompat
 import com.example.wallet_wise_app.R
-import com.example.wallet_wise_app.services.CategoryService
+import com.example.wallet_wise_app.database.DatabaseHelper
+import com.example.wallet_wise_app.services.GamificationService
 
-class CreateCategoryActivity : AppCompatActivity() {
+class GamificationActivity : AppCompatActivity() {
 
-    private lateinit var etCategoryName: EditText
-    private lateinit var btnCreateCategory: Button
-    private lateinit var btnViewCategories: Button
     private lateinit var btnMenu: ImageButton
     private lateinit var drawerLayout: DrawerLayout
+    private lateinit var tvStatsSummary: TextView
+    private lateinit var lvUnlockedAchievements: ListView
+    private lateinit var lvLockedAchievements: ListView
+
     private lateinit var navExpenseList: Button
     private lateinit var navViewGoals: Button
     private lateinit var navSetGoals: Button
@@ -24,21 +26,32 @@ class CreateCategoryActivity : AppCompatActivity() {
     private lateinit var navViewCategories: Button
     private lateinit var navProjectionCalendar: Button
     private lateinit var navGamification: Button
-    private lateinit var categoryService: CategoryService
+
+    private lateinit var gamificationService: GamificationService
+    private lateinit var dbHelper: DatabaseHelper
 
     private val currentUserId = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_create_category)
+        setContentView(R.layout.activity_gamification)
 
-        categoryService = CategoryService(this)
+        gamificationService = GamificationService(this)
+        dbHelper = DatabaseHelper.getInstance(this)
 
-        etCategoryName = findViewById(R.id.etCategoryName)
-        btnCreateCategory = findViewById(R.id.btnCreateCategory)
-        btnViewCategories = findViewById(R.id.btnViewCategories)
+        initViews()
+        setupDrawer()
+        loadAchievements()
+        loadStats()
+    }
+
+    private fun initViews() {
         btnMenu = findViewById(R.id.btnMenu)
         drawerLayout = findViewById(R.id.drawerLayout)
+        tvStatsSummary = findViewById(R.id.tvStatsSummary)
+        lvUnlockedAchievements = findViewById(R.id.lvUnlockedAchievements)
+        lvLockedAchievements = findViewById(R.id.lvLockedAchievements)
+
         navExpenseList = findViewById(R.id.navExpenseList)
         navViewGoals = findViewById(R.id.navViewGoals)
         navSetGoals = findViewById(R.id.navSetGoals)
@@ -46,16 +59,6 @@ class CreateCategoryActivity : AppCompatActivity() {
         navViewCategories = findViewById(R.id.navViewCategories)
         navProjectionCalendar = findViewById(R.id.navProjectionCalendar)
         navGamification = findViewById(R.id.navGamification)
-
-        setupDrawer()
-
-        btnCreateCategory.setOnClickListener {
-            createCategory()
-        }
-
-        btnViewCategories.setOnClickListener {
-            startActivity(Intent(this, ViewCategoriesActivity::class.java))
-        }
     }
 
     private fun setupDrawer() {
@@ -79,6 +82,7 @@ class CreateCategoryActivity : AppCompatActivity() {
         }
 
         navCreateCategory.setOnClickListener {
+            startActivity(Intent(this, CreateCategoryActivity::class.java))
             drawerLayout.closeDrawer(GravityCompat.START)
         }
 
@@ -93,42 +97,43 @@ class CreateCategoryActivity : AppCompatActivity() {
         }
 
         navGamification.setOnClickListener {
-            startActivity(Intent(this, GamificationActivity::class.java))
             drawerLayout.closeDrawer(GravityCompat.START)
         }
     }
 
-    private fun createCategory() {
-        val categoryName = etCategoryName.text.toString().trim()
+    private fun loadStats() {
+        val stats = dbHelper.getUserStats(currentUserId)
+        if (stats != null) {
+            tvStatsSummary.text = "📊 Your Progress: ${stats.loginCount} Logins | ${stats.expenseCount} Expenses | ${stats.goalCount} Goals"
+        } else {
+            tvStatsSummary.text = "📊 Your Progress: 0 Logins | 0 Expenses | 0 Goals"
+        }
+    }
 
-        if (categoryName.isEmpty()) {
-            Toast.makeText(this, "Please enter a category name", Toast.LENGTH_SHORT).show()
-            return
+    private fun loadAchievements() {
+        val achievements = gamificationService.getUserAchievements(currentUserId)
+
+        val unlocked = achievements.filter { it.isUnlocked }
+        val locked = achievements.filter { !it.isUnlocked }
+
+        val unlockedStrings = unlocked.map {
+            "${it.icon} ${it.name}\n   ✅ ${it.description} - Unlocked on ${it.unlockedAt}"
         }
 
-        btnCreateCategory.isEnabled = false
-        btnCreateCategory.text = "Creating..."
+        val lockedStrings = locked.map {
+            "${it.icon} ${it.name}\n   🔒 ${it.description} (Need ${it.requiredValue})"
+        }
 
-        Thread {
-            try {
-                val savedCategory = categoryService.addCategory(
-                    categoryName = categoryName,
-                    userId = currentUserId
-                )
+        val unlockedAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, unlockedStrings)
+        val lockedAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, lockedStrings)
 
-                runOnUiThread {
-                    Toast.makeText(this, "Category '${savedCategory.categoryName}' created!", Toast.LENGTH_LONG).show()
-                    etCategoryName.text.clear()
-                    btnCreateCategory.isEnabled = true
-                    btnCreateCategory.text = "Create Category"
-                }
-            } catch (e: Exception) {
-                runOnUiThread {
-                    Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_LONG).show()
-                    btnCreateCategory.isEnabled = true
-                    btnCreateCategory.text = "Create Category"
-                }
-            }
-        }.start()
+        lvUnlockedAchievements.adapter = unlockedAdapter
+        lvLockedAchievements.adapter = lockedAdapter
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadAchievements()
+        loadStats()
     }
 }

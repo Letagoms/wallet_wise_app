@@ -1,6 +1,7 @@
 // screens/SetGoalsActivity.kt
 package com.example.wallet_wise_app.screens
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.widget.*
@@ -8,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.core.view.GravityCompat
 import com.example.wallet_wise_app.R
+import com.example.wallet_wise_app.services.GamificationService
 import com.example.wallet_wise_app.services.GoalService
 
 class SetGoalsActivity : AppCompatActivity() {
@@ -24,6 +26,7 @@ class SetGoalsActivity : AppCompatActivity() {
     private lateinit var navCreateCategory: Button
     private lateinit var navViewCategories: Button
     private lateinit var navProjectionCalendar: Button
+    private lateinit var navGamification: Button
     private lateinit var goalService: GoalService
 
     private val currentUserId = 1
@@ -46,6 +49,7 @@ class SetGoalsActivity : AppCompatActivity() {
         navCreateCategory = findViewById(R.id.navCreateCategory)
         navViewCategories = findViewById(R.id.navViewCategories)
         navProjectionCalendar = findViewById(R.id.navProjectionCalendar)
+        navGamification = findViewById(R.id.navGamification)
 
         setupDrawer()
 
@@ -91,6 +95,11 @@ class SetGoalsActivity : AppCompatActivity() {
             startActivity(Intent(this, ProjectionCalendarActivity::class.java))
             drawerLayout.closeDrawer(GravityCompat.START)
         }
+
+        navGamification.setOnClickListener {
+            startActivity(Intent(this, GamificationActivity::class.java))
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
     }
 
     private fun saveGoal() {
@@ -131,8 +140,16 @@ class SetGoalsActivity : AppCompatActivity() {
                     userId = currentUserId
                 )
 
+                val gamificationService = GamificationService(this@SetGoalsActivity)
+                val unlockedAchievement = gamificationService.recordGoal(currentUserId)
+
                 runOnUiThread {
                     Toast.makeText(this, "Goal saved! Min: R$minimumGoal, Max: R$maximumGoal", Toast.LENGTH_LONG).show()
+
+                    if (unlockedAchievement != null) {
+                        showAchievementPopup(unlockedAchievement)
+                    }
+
                     etMinimumGoal.text.clear()
                     etMaximumGoal.text.clear()
                     btnSetGoals.isEnabled = true
@@ -146,5 +163,14 @@ class SetGoalsActivity : AppCompatActivity() {
                 }
             }
         }.start()
+    }
+
+    private fun showAchievementPopup(achievementName: String) {
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("🏆 Achievement Unlocked!")
+            .setMessage("Congratulations! You've earned: $achievementName")
+            .setPositiveButton("Awesome!") { _, _ -> }
+            .create()
+        dialog.show()
     }
 }

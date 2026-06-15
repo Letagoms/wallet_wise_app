@@ -9,59 +9,80 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="24dp"
         android:background="#FFFFFF">
 
-        <ImageButton
-            android:id="@+id/btnMenu"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_menu"
-            android:background="@android:color/transparent"
-            android:layout_marginBottom="16dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Create Category"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="32dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Category Name"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="4dp" />
-
-        <EditText
-            android:id="@+id/etCategoryName"
+        <!-- Top Bar -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="e.g., Groceries, Transport, Food"
-            android:inputType="textCapWords"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:gravity="center_vertical">
+
+            <ImageButton
+                android:id="@+id/btnMenu"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_menu"
+                android:background="@android:color/transparent" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Achievements"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:gravity="center" />
+
+        </LinearLayout>
+
+        <!-- Stats Summary -->
+        <TextView
+            android:id="@+id/tvStatsSummary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="WALLET WISE"
+            android:textSize="14sp"
+            android:textColor="#666666"
+            android:gravity="center"
             android:padding="12dp"
             android:background="#F5F5F5"
-            android:layout_marginBottom="24dp" />
+            android:layout_margin="16dp" />
 
-        <Button
-            android:id="@+id/btnCreateCategory"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Create Category"
-            android:backgroundTint="#2136F3"
-            android:textColor="#FFFFFF" />
+            android:text="🏆 Unlocked Achievements"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:padding="16dp"
+            android:background="#E8F5E9" />
 
-        <Button
-            android:id="@+id/btnViewCategories"
+        <ListView
+            android:id="@+id/lvUnlockedAchievements"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:divider="#E5E5E5"
+            android:dividerHeight="1dp" />
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="View All Categories"
-            android:backgroundTint="#4CAF50"
-            android:textColor="#FFFFFF"
-            android:layout_marginTop="12dp" />
+            android:text="🔒 Locked Achievements"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:padding="16dp"
+            android:background="#FFEBEE" />
+
+        <ListView
+            android:id="@+id/lvLockedAchievements"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:divider="#E5E5E5"
+            android:dividerHeight="1dp" />
 
     </LinearLayout>
 
@@ -144,8 +165,7 @@
             android:layout_height="wrap_content"
             android:text="Achievements"
             android:backgroundTint="#FF5722"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="8dp" />
+            android:textColor="#FFFFFF" />
 
     </LinearLayout>
 

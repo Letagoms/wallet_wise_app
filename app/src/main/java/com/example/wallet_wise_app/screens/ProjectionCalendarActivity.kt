@@ -37,6 +37,7 @@ class ProjectionCalendarActivity : AppCompatActivity() {
     private lateinit var navCreateCategory: Button
     private lateinit var navViewCategories: Button
     private lateinit var navProjectionCalendar: Button
+    private lateinit var navGamification: Button
 
     private lateinit var dbHelper: DatabaseHelper
     private var currentUserId = 1
@@ -85,6 +86,7 @@ class ProjectionCalendarActivity : AppCompatActivity() {
         navCreateCategory = findViewById(R.id.navCreateCategory)
         navViewCategories = findViewById(R.id.navViewCategories)
         navProjectionCalendar = findViewById(R.id.navProjectionCalendar)
+        navGamification = findViewById(R.id.navGamification)
     }
 
     private fun setupDrawer() {
@@ -118,6 +120,11 @@ class ProjectionCalendarActivity : AppCompatActivity() {
         }
 
         navProjectionCalendar.setOnClickListener {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+
+        navGamification.setOnClickListener {
+            startActivity(Intent(this, GamificationActivity::class.java))
             drawerLayout.closeDrawer(GravityCompat.START)
         }
     }

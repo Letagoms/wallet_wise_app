@@ -72,6 +72,11 @@
             android:name=".screens.ProjectionCalendarActivity"
             android:exported="false" />
 
+        <!-- Gamification Activity -->
+        <activity
+            android:name=".screens.GamificationActivity"
+            android:exported="false" />
+
         <!-- FileProvider for Camera Photos -->
         <provider
             android:name="androidx.core.content.FileProvider"

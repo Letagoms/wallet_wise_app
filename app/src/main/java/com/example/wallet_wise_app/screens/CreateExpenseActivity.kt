@@ -2,6 +2,7 @@
 package com.example.wallet_wise_app.screens
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -17,6 +18,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.example.wallet_wise_app.R
 import com.example.wallet_wise_app.services.CategoryService
 import com.example.wallet_wise_app.services.ExpenseService
+import com.example.wallet_wise_app.services.GamificationService
 import com.example.wallet_wise_app.utils.PhotoHelper
 import com.example.wallet_wise_app.utils.ReceiptScanner
 import java.io.File
@@ -46,6 +48,7 @@ class CreateExpenseActivity : AppCompatActivity() {
     private lateinit var navCreateCategory: Button
     private lateinit var navViewCategories: Button
     private lateinit var navProjectionCalendar: Button
+    private lateinit var navGamification: Button
 
     private var selectedPhotoPath: String = ""
     private var currentPhotoBitmap: Bitmap? = null
@@ -129,6 +132,7 @@ class CreateExpenseActivity : AppCompatActivity() {
         navCreateCategory = findViewById(R.id.navCreateCategory)
         navViewCategories = findViewById(R.id.navViewCategories)
         navProjectionCalendar = findViewById(R.id.navProjectionCalendar)
+        navGamification = findViewById(R.id.navGamification)
 
         setupDrawer()
         setupCategorySpinner()
@@ -194,6 +198,11 @@ class CreateExpenseActivity : AppCompatActivity() {
 
         navProjectionCalendar.setOnClickListener {
             startActivity(Intent(this, ProjectionCalendarActivity::class.java))
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+
+        navGamification.setOnClickListener {
+            startActivity(Intent(this, GamificationActivity::class.java))
             drawerLayout.closeDrawer(GravityCompat.START)
         }
     }
@@ -323,8 +332,16 @@ class CreateExpenseActivity : AppCompatActivity() {
                     description = description
                 )
 
+                val gamificationService = GamificationService(this@CreateExpenseActivity)
+                val unlockedAchievement = gamificationService.recordExpense(currentUserId)
+
                 runOnUiThread {
                     Toast.makeText(this, "Saved! ID: ${savedExpense.id}", Toast.LENGTH_LONG).show()
+
+                    if (unlockedAchievement != null) {
+                        showAchievementPopup(unlockedAchievement)
+                    }
+
                     finish()
                 }
             } catch (e: Exception) {
@@ -335,5 +352,14 @@ class CreateExpenseActivity : AppCompatActivity() {
                 }
             }
         }.start()
+    }
+
+    private fun showAchievementPopup(achievementName: String) {
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("🏆 Achievement Unlocked!")
+            .setMessage("Congratulations! You've earned: $achievementName")
+            .setPositiveButton("Awesome!") { _, _ -> }
+            .create()
+        dialog.show()
     }
 }

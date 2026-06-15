@@ -12,8 +12,8 @@ import com.example.wallet_wise_app.database.DatabaseHelper
 import com.example.wallet_wise_app.model.Expense
 import com.example.wallet_wise_app.services.CategoryService
 import com.example.wallet_wise_app.utils.DateRangePickerDialog
-import java.text.SimpleDateFormat
 import java.util.*
+import java.text.SimpleDateFormat  // ← ADD THIS IMPORT
 
 class ViewCategoriesActivity : AppCompatActivity() {
 
@@ -32,6 +32,7 @@ class ViewCategoriesActivity : AppCompatActivity() {
     private lateinit var navCreateCategory: Button
     private lateinit var navViewCategories: Button
     private lateinit var navProjectionCalendar: Button
+    private lateinit var navGamification: Button
     private lateinit var categoryService: CategoryService
     private lateinit var dbHelper: DatabaseHelper
 
@@ -64,6 +65,7 @@ class ViewCategoriesActivity : AppCompatActivity() {
         navCreateCategory = findViewById(R.id.navCreateCategory)
         navViewCategories = findViewById(R.id.navViewCategories)
         navProjectionCalendar = findViewById(R.id.navProjectionCalendar)
+        navGamification = findViewById(R.id.navGamification)
 
         setupDrawer()
 
@@ -113,6 +115,11 @@ class ViewCategoriesActivity : AppCompatActivity() {
 
         navProjectionCalendar.setOnClickListener {
             startActivity(Intent(this, ProjectionCalendarActivity::class.java))
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+
+        navGamification.setOnClickListener {
+            startActivity(Intent(this, GamificationActivity::class.java))
             drawerLayout.closeDrawer(GravityCompat.START)
         }
     }
@@ -171,7 +178,6 @@ class ViewCategoriesActivity : AppCompatActivity() {
         tvTotalSpent.text = "Total Spent: R${String.format(Locale.US, "%.2f", totalSpent)}"
 
         try {
-            // Get categories with spending totals for the filtered expenses
             val categories = categoryService.getCategoriesByUserId(currentUserId)
             val predefinedCategories = categoryService.getPredefinedCategories()
             val allCategories = (predefinedCategories + categories).distinctBy { it.categoryName }
@@ -181,18 +187,13 @@ class ViewCategoriesActivity : AppCompatActivity() {
                     .filter { it.category.equals(category.categoryName, ignoreCase = true) }
                     .sumOf { it.amount }
                 Triple(category.categoryName, totalSpentInCategory, category.categoryId < 0)
-            }.filter { it.second > 0 || it.third } // Show categories with spending OR predefined categories
+            }.filter { it.second > 0 || it.third }
                 .sortedByDescending { it.second }
 
             runOnUiThread {
                 if (categoriesWithTotals.isEmpty()) {
                     lvCategories.visibility = android.view.View.GONE
                     emptyText.visibility = android.view.View.VISIBLE
-                    if (startDateFilter != null) {
-                        emptyText.text = "No expenses found for selected dates.\nTap 'Create Category' to add one."
-                    } else {
-                        emptyText.text = "No categories yet.\nTap 'Create Category' to add one."
-                    }
                 } else {
                     lvCategories.visibility = android.view.View.VISIBLE
                     emptyText.visibility = android.view.View.GONE

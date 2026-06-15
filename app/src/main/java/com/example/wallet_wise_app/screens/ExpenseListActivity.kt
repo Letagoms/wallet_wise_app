@@ -34,6 +34,7 @@ class ExpenseListActivity : AppCompatActivity() {
     private lateinit var navCreateCategory: Button
     private lateinit var navViewCategories: Button
     private lateinit var navProjectionCalendar: Button
+    private lateinit var navGamification: Button
     private lateinit var dbHelper: DatabaseHelper
 
     private var allExpenses: List<Expense> = emptyList()
@@ -63,6 +64,7 @@ class ExpenseListActivity : AppCompatActivity() {
         navCreateCategory = findViewById(R.id.navCreateCategory)
         navViewCategories = findViewById(R.id.navViewCategories)
         navProjectionCalendar = findViewById(R.id.navProjectionCalendar)
+        navGamification = findViewById(R.id.navGamification)
 
         setupDrawer()
         loadExpenses()
@@ -111,6 +113,11 @@ class ExpenseListActivity : AppCompatActivity() {
 
         navProjectionCalendar.setOnClickListener {
             startActivity(Intent(this, ProjectionCalendarActivity::class.java))
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+
+        navGamification.setOnClickListener {
+            startActivity(Intent(this, GamificationActivity::class.java))
             drawerLayout.closeDrawer(GravityCompat.START)
         }
     }
